@@ -1,0 +1,266 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>BECE Quiz Hub</title>
+<link rel="manifest" href="manifest.json"><meta name="theme-color" content="#1565c0"><link rel="apple-touch-icon" href="icon-192.png">
+<style>
+:root{--b:#1565c0;--d:#0d47a1;--l:#e3f0ff;--t:#12263f}
+*{box-sizing:border-box}body{margin:0;font-family:system-ui,Arial,sans-serif;background:#f4f8ff;color:var(--t)}
+header{background:linear-gradient(135deg,var(--d),var(--b));color:#fff;padding:22px 16px 26px;text-align:center;border-radius:0 0 26px 26px}
+header h1{margin:0;font-size:1.5rem}header p{margin:6px 0 0;opacity:.9}
+main{max-width:680px;margin:0 auto;padding:14px}
+.card{background:#fff;border-radius:14px;padding:14px;margin-bottom:12px;box-shadow:0 2px 8px rgba(21,101,192,.12)}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+button{font:inherit;cursor:pointer;border:0;border-radius:10px;padding:11px}
+.sub{background:var(--l);color:var(--d);font-weight:600;border:2px solid transparent;text-align:left}
+.sub:hover{border-color:var(--b)}
+.pri{background:var(--b);color:#fff;font-weight:600;width:100%;margin-top:8px}
+.lv{background:#fff;color:var(--b);border:2px solid var(--b);width:49%}.lv.on{background:var(--b);color:#fff}
+.opt{display:block;width:100%;text-align:left;background:var(--l);margin:7px 0}.opt:hover{background:#cfe3fb}
+.ok{background:#c8e6c9!important}.no{background:#ffcdd2!important}
+.bar{height:8px;background:#dbe7f7;border-radius:5px;overflow:hidden;margin:8px 0}.bar div{height:100%;background:var(--b);width:0;transition:width .3s}
+.m{color:#5a6b82;font-size:.9rem}.hid{display:none}
+header{position:relative}#menu{position:absolute;left:12px;top:16px;background:rgba(255,255,255,.2);color:#fff;font-size:1.3rem;padding:6px 12px}
+#side{position:fixed;top:0;left:0;bottom:0;width:230px;background:#fff;box-shadow:2px 0 14px rgba(0,0,0,.25);transform:translateX(-100%);transition:.25s;z-index:20;padding:16px}
+#side.open{transform:none}#side h3{color:var(--d);margin:4px 0 12px}
+#side button{display:block;width:100%;text-align:left;background:var(--l);color:var(--d);font-weight:600;margin:8px 0}
+@media(min-width:800px){#side{transform:none}body{padding-left:230px}#menu{display:none}}details{margin:8px 0}summary{cursor:pointer;font-weight:600;color:var(--d)}details p{margin:6px 0 0;line-height:1.5}
+.ex{margin-top:8px;padding:8px;background:#fff8e1;border-radius:8px;font-size:.9rem}
+.big{font-size:2rem;text-align:center;font-weight:700;color:var(--b)}
+input{font:inherit;padding:10px;border:2px solid #b8d2f2;border-radius:10px;width:100%}
+.mem{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.mc{height:70px;background:var(--b);color:var(--b);font-weight:600;font-size:.9rem}.mc.up{background:var(--l);color:var(--d)}.mc.done{background:#c8e6c9;color:#1b5e20}
+</style></head><body>
+<aside id="side"><h3>📘 Menu</h3><button id="nHome">🏠 Home</button><button id="nLearn">📖 Read lessons</button><button id="nStory">📸 Post a story</button><button id="nChat">💬 Chat with friends</button><button id="nCall">📞 Call a friend</button><button id="nSign">👤 Sign in / change name</button></aside>
+<header><button id="menu">☰</button><h1>📘 BECE Quiz Hub</h1><p id="greet"></p></header>
+<main>
+<section id="home">
+ <button class="pri hid" id="inst" style="margin:0 0 12px">📲 Install app on your phone</button>
+ <button class="pri" id="lb" style="margin:0 0 12px">📖 Read lessons</button>
+ <div id="login" class="card"><b>Sign in</b>
+  <button class="pri" id="gsign" style="margin:8px 0">Sign in with Google</button>
+  <input id="nm" placeholder="Or type your first name"><button class="pri" id="go">Start</button></div>
+ <div class="card m" id="fact"></div>
+ <div class="card"><b>Choose your level</b><div style="margin-top:8px;display:flex;gap:2%">
+  <button class="lv" data-l="s">🌱 Starter</button><button class="lv" data-l="b">🎯 BECE level</button></div></div>
+ <div class="card"><b>Subjects</b><div class="grid" id="subs" style="margin-top:8px"></div></div>
+ <div class="card"><b>Mini games</b><div class="grid" style="margin-top:8px">
+  <button class="sub" id="g1">⚡ Speed Math<br><span class="m">30 seconds!</span></button>
+  <button class="sub" id="g2">🃏 French Match<br><span class="m">Memory game</span></button></div></div>
+ <div class="card"><b>Best scores</b><div id="sc" class="m">None yet</div></div>
+</section>
+<section id="quiz" class="hid"><div class="card"><div class="m" id="meta"></div><div class="bar"><div id="pg"></div></div>
+ <h3 id="qt"></h3><div id="op"></div><div id="ex" class="ex hid"></div><button class="pri hid" id="nx">Next</button></div></section>
+<section id="result" class="hid"><div class="card"><div class="big" id="fs"></div><p id="fm" style="text-align:center"></p>
+ <button class="pri" id="again">Try again</button><button class="pri" id="hm" style="background:#455a75">Home</button></div></section>
+<section id="speed" class="hid"><div class="card"><div class="m" id="spT"></div><div class="m" id="spS"></div>
+ <h2 id="spQ" style="text-align:center"></h2><input id="spIn" type="number" inputmode="numeric" placeholder="Type answer, press Enter">
+ <button class="pri" id="spGo">Restart</button><button class="pri" id="spH" style="background:#455a75">Home</button></div></section>
+<section id="learn" class="hid"><div id="ln"></div><button class="pri" id="lh" style="background:#455a75">Home</button></section>
+<section id="chat" class="hid"><div class="card"><div class="m"><span id="rc"></span> <button class="chg" style="padding:4px 8px">change</button></div>
+<div id="msgs" style="height:55vh;overflow:auto;margin:8px 0"></div><input id="mi" placeholder="Type a message"><button class="pri" id="send">Send</button></div></section>
+<section id="stories" class="hid"><div class="card"><div class="m"><span id="rs"></span> <button class="chg" style="padding:4px 8px">change</button></div>
+<input id="cap" placeholder="Caption (optional)" style="margin:8px 0"><input id="sp" type="file" accept="image/*"><p class="m">Stories disappear after 24 hours.</p></div><div id="slist"></div></section>
+<section id="memory" class="hid"><div class="card"><div class="m" id="mvs"></div><div class="mem" id="mg" style="margin-top:8px"></div>
+ <button class="pri" id="mH" style="background:#455a75">Home</button></div></section>
+</main>
+<script src="more-questions.js"></script>
+<script>
+const FB={apiKey:"PASTE_YOUR_API_KEY",authDomain:"",projectId:"",appId:""}; // paste your Firebase config here (see instructions)
+/* ===== ADD QUESTIONS HERE =====
+ [ "question", ["A","B","C","D"], answerPosition(0-3), "explanation", "s" or "b" ]
+ "s" = Starter, "b" = BECE level. Maths is generated automatically. */
+const D={
+"📖 English & Communication":[
+["Choose the correct plural of 'child'.",["childs","children","childrens","childes"],1,"Irregular plural.","s"],
+["Which word means the same as 'happy'?",["sad","joyful","angry","tired"],1,"Joyful = happy.","s"],
+["Pick the correct sentence.",["She go to school.","She goes to school.","She going school.","She gone to school."],1,"'She' takes 'goes'.","s"],
+["Which is a proper noun?",["city","Kumasi","river","school"],1,"Names of places start with capital letters.","s"],
+["'The sun rose slowly.' 'slowly' is a...",["noun","adjective","adverb","pronoun"],2,"It tells how the sun rose.","b"],
+["'If I ___ rich, I would travel.'",["am","was","were","be"],2,"Use 'were' for unreal conditions.","b"],
+["The opposite of 'ancient' is...",["old","modern","huge","weak"],1,"Ancient = very old.","b"]],
+"🔢 Mathematics":"gen",
+"🔬 Integrated Science":[
+["Which gas do plants take in for photosynthesis?",["Oxygen","Nitrogen","Carbon dioxide","Hydrogen"],2,"Plants use CO₂, water and sunlight.","s"],
+["The unit of force is the...",["Joule","Newton","Watt","Metre"],1,"Force is measured in newtons.","s"],
+["Which organ pumps blood?",["Lungs","Heart","Liver","Kidney"],1,"The heart pumps blood round the body.","s"],
+["Water changing to vapour is called...",["Condensation","Evaporation","Freezing","Melting"],1,"Heat turns liquid water into vapour.","b"],
+["Which part of the cell controls its activities?",["Cell wall","Nucleus","Vacuole","Cytoplasm"],1,"The nucleus is the control centre.","b"]],
+"🌍 Social Studies":[
+["Ghana became independent in...",["1947","1957","1960","1966"],1,"6th March 1957.","s"],
+["The longest river in Ghana is the...",["Pra","Ankobra","Volta","Tano"],2,"The Volta.","s"],
+["First President of Ghana?",["J.J. Rawlings","Kwame Nkrumah","J.A. Kufuor","Hilla Limann"],1,"Dr Kwame Nkrumah.","s"],
+["ECOWAS promotes mainly...",["Sports","Economic cooperation in West Africa","Religion","Farming only"],1,"Economic Community of West African States.","b"],
+["Which body organises elections in Ghana?",["Electoral Commission","Parliament","Police","Judiciary"],0,"The Electoral Commission.","b"]],
+"🕊️ RME":[
+["Which is a good moral value?",["Honesty","Cheating","Stealing","Laziness"],0,"Honesty = telling the truth.","s"],
+["Respect for elders is important in...",["Only schools","Only churches","Ghanaian culture","Nowhere"],2,"It is central to our culture.","s"],
+["The Holy Book of Islam is the...",["Bible","Quran","Torah","Vedas"],1,"The Quran.","b"],
+["Which is a rite of passage?",["Naming ceremony","Shopping","Football","Reading"],0,"Rites mark stages of life.","b"]],
+"💻 ICT":[
+["Which is an input device?",["Monitor","Keyboard","Printer","Speaker"],1,"A keyboard sends data in.","s"],
+["CPU stands for...",["Central Processing Unit","Computer Power Unit","Central Program Utility","Control Print Unit"],0,"The brain of the computer.","s"],
+["Which is an operating system?",["Windows","Excel","Chrome","Word"],0,"Windows runs the computer.","b"],
+["1 byte equals how many bits?",["4","8","16","10"],1,"8 bits = 1 byte.","b"]],
+"🇫🇷 French":[
+["'Good morning' in French?",["Bonsoir","Bonjour","Merci","Au revoir"],1,"Bonjour.","s"],
+["'Merci' means...",["Please","Sorry","Thank you","Goodbye"],2,"Merci = thank you.","s"],
+["'Chat' means...",["dog","cat","bird","fish"],1,"Chat = cat.","s"],
+["'Je m'appelle Ama' means...",["I love Ama","My name is Ama","I go to Ama","I eat Ama"],1,"Introducing yourself.","b"],
+["'Three' in French?",["deux","trois","quatre","cinq"],1,"Trois.","b"]],
+"🗣️ Asante Twi":[
+["'Medaase' means...",["Please","Thank you","Sorry","Goodbye"],1,"Medaase = thank you.","s"],
+["How do you say 'Good morning' in Twi?",["Maakye","Maadwo","Maaha","Akwaaba"],0,"Maakye = good morning.","s"],
+["'Akwaaba' means...",["Welcome","Goodbye","Thank you","Please"],0,"Akwaaba = welcome.","s"],
+["'Aane' means...",["No","Yes","Maybe","Later"],1,"Aane = yes, Daabi = no.","s"],
+["'Daabi' means...",["Yes","Thank you","No","Water"],2,"Daabi = no.","s"],
+["'Wo ho te dɛn?' means...",["What is your name?","How are you?","Where are you going?","What time is it?"],1,"A common greeting: How are you?","s"],
+["'Nsuo' means...",["Food","Water","Book","House"],1,"Nsuo = water.","s"],
+["'Maame' means...",["Father","Mother","Teacher","Child"],1,"Maame = mother.","s"],
+["The number 'anum' is...",["3","4","5","6"],2,"anum = 5.","s"],
+["'Baako' is the number...",["1","2","3","10"],0,"baako = 1.","s"],
+["Which day is 'Fiada'?",["Monday","Wednesday","Friday","Sunday"],2,"Fiada = Friday.","b"],
+["Which day is 'Kwasiada'?",["Sunday","Monday","Saturday","Thursday"],0,"Kwasiada = Sunday.","b"],
+["Which day is 'Memeneda'?",["Friday","Saturday","Tuesday","Thursday"],1,"Memeneda = Saturday.","b"],
+["'Edu' is the number...",["5","8","10","20"],2,"edu = 10.","b"],
+["'Nwɔtwe' is the number...",["6","7","8","9"],2,"nwɔtwe = 8.","b"],
+["'Me kɔ sukuu' means...",["I eat food","I go to school","I love books","I am a teacher"],1,"sukuu = school.","b"],
+["'Da yie' is said to wish someone...",["Good morning","A good night's sleep","Welcome","Happy birthday"],1,"Da yie = sleep well / good night.","b"],
+["'Ɔbarima' means...",["Woman","Man","Child","Elder"],1,"ɔbarima = man, ɔbaa = woman.","b"]],
+"🛠️ Career Technology":[
+["Which tool measures length?",["Hammer","Tape measure","Saw","Pliers"],1,"A tape measure.","s"],
+["A workshop safety rule is to...",["Run around","Wear protective clothing","Eat while working","Skip instructions"],1,"Stay safe.","b"]],
+"🎨 Creative Arts":[
+["Which is a primary colour?",["Green","Orange","Red","Purple"],2,"Red, blue, yellow.","s"],
+["Blue + yellow makes...",["Green","Orange","Purple","Brown"],0,"Secondary colour green.","b"]],
+"✝️ Bible Quiz":[
+["Who built the ark?",["Moses","Noah","Abraham","David"],1,"Genesis 6.","s"],
+["How many disciples did Jesus choose?",["10","11","12","14"],2,"Twelve.","s"],
+["Who was swallowed by a big fish?",["Jonah","Peter","Elijah","Paul"],0,"Jonah.","s"],
+["Who defeated Goliath?",["Saul","Samson","David","Joshua"],2,"David.","s"],
+["Who led Israel out of Egypt?",["Moses","Aaron","Joshua","Elijah"],0,"Moses.","s"],
+["The Sermon on the Mount is in...",["Matthew 5–7","John 3","Acts 2","Genesis 1"],0,"Matthew 5–7.","b"],
+["Who replaced Judas as an apostle?",["Matthias","Barnabas","Silas","Timothy"],0,"Acts 1.","b"]]
+};
+if(window.EXTRA)for(const k in EXTRA)if(Array.isArray(D[k]))D[k].push(...EXTRA[k]);
+const FACTS=["Ghana was the first sub-Saharan African country to gain independence (1957).","7 × 7 = 49, so 49 is a square number.","Lake Volta is one of the largest man-made lakes in the world.","A square number is a number multiplied by itself, like 6 × 6 = 36.","The Bible has 66 books: 39 in the Old Testament, 27 in the New.","Negative × negative = positive.","Water boils at 100°C at sea level.","'Bonjour' is the French word for hello."];
+const $=id=>document.getElementById(id),rnd=(a,b)=>a+Math.floor(Math.random()*(b-a+1)),pick=a=>a[rnd(0,a.length-1)];
+const shuffle=a=>a.map(v=>[Math.random(),v]).sort((x,y)=>x[0]-y[0]).map(x=>x[1]);
+let user=localStorage.getItem("user")||"",level="s",T,qs,i,sc,lock,sub,sp;
+/* ---- maths generators ---- */
+const W1="zero one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen".split(" "),TY=",,twenty,thirty,forty,fifty,sixty,seventy,eighty,ninety".split(",");
+function words(n){if(n<20)return W1[n];if(n<100)return TY[n/10|0]+(n%10?"-"+W1[n%10]:"");
+ if(n<1000)return W1[n/100|0]+" hundred"+(n%100?" and "+words(n%100):"");
+ return words(n/1000|0)+" thousand"+(n%1000?(n%1000<100?" and ":" ")+words(n%1000):"")}
+const NUM={s:[()=>{const n=rnd(2,12);return{q:`${n}² = ?`,c:n*n,e:`${n} × ${n} = ${n*n}`}},
+ ()=>{const n=rnd(2,12);return{q:`√${n*n} = ?`,c:n,e:`${n} × ${n} = ${n*n}`}},
+ ()=>{const a=rnd(-9,9),b=rnd(-9,9),p=rnd(0,1);return{q:`(${a}) ${p?"+":"−"} (${b}) = ?`,c:p?a+b:a-b,e:p?"Add the integers.":"Subtracting a negative means adding."}}],
+ b:[()=>{const p=pick([10,15,20,25,30,40]),n=pick([40,60,80,120,200,300,400]);return{q:`${p}% of ${n} = ?`,c:p*n/100,e:`${p}/100 × ${n}`}},
+ ()=>{const x=rnd(2,12),a=rnd(2,9),b=rnd(1,20);return{q:`Solve: ${a}x + ${b} = ${a*x+b}. x = ?`,c:x,e:`${a}x = ${a*x}, so x = ${x}`}},
+ ()=>{const l=rnd(4,15),w=rnd(3,12);return{q:`Area of a rectangle ${l} cm by ${w} cm (cm²)?`,c:l*w,e:"Area = length × width."}},
+ ()=>{const a=rnd(2,9),b=rnd(2,9);return{q:`(−${a}) × (−${b}) = ?`,c:a*b,e:"Negative × negative = positive."}},
+ ()=>{const n=rnd(13,25);return{q:`${n}² = ?`,c:n*n,e:`${n} × ${n} = ${n*n}`}}]};
+const WRD={s:[()=>{const n=rnd(11,999);return{q:`Write ${n} in words.`,c:words(n),e:"Break it into hundreds, tens and units.",wr:()=>words(Math.max(1,n+rnd(-30,30)))}},
+ ()=>{const n=rnd(11,999);return{q:`Which number is "${words(n)}"?`,c:n,e:`${words(n)} = ${n}`,wr:()=>Math.max(1,n+rnd(-30,30))}}],
+ b:[()=>{const n=rnd(1000,9999);return{q:`Write ${n} in words.`,c:words(n),e:"Thousands, hundreds, tens, units.",wr:()=>words(Math.max(1,n+rnd(-300,300)))}}]};
+function mc(x){const s=new Set([x.c]);let t=0;while(s.size<4&&t++<80)s.add(x.wr?x.wr():x.c+rnd(-6,6));
+ const a=shuffle([...s]);return{q:x.q,o:a.map(String),a:a.indexOf(x.c),e:x.e}}
+const mathQ=()=>mc(pick([...NUM[level],...WRD[level]])());
+/* ---- home ---- */
+const show=id=>["home","quiz","result","speed","memory","learn","stories","chat"].forEach(s=>$(s).classList.toggle("hid",s!=id));
+const scores=()=>{try{return JSON.parse(localStorage.getItem("scores")||"{}")}catch{return{}}};
+function save(k,v){const s=scores();if(!(s[k]>=v))s[k]=v;try{localStorage.setItem("scores",JSON.stringify(s))}catch{}}
+function home(){clearInterval(T);$("greet").textContent=user?`Hello, ${user}! 👋 Let's learn.`:"Practice • Learn • Play";
+ $("login").classList.toggle("hid",!!user);$("fact").textContent="💡 "+pick(FACTS);
+ document.querySelectorAll(".lv").forEach(b=>{b.classList.toggle("on",b.dataset.l==level);b.onclick=()=>{level=b.dataset.l;home()}});
+ $("subs").innerHTML="";Object.keys(D).forEach(n=>{const b=document.createElement("button");b.className="sub";b.textContent=n;b.onclick=()=>start(n);$("subs").appendChild(b)});
+ const s=scores(),k=Object.keys(s);$("sc").innerHTML=k.length?k.map(x=>`${x}: <b>${s[x]}</b>`).join("<br>"):"None yet";show("home")}
+function setUser(n){user=n;try{localStorage.setItem("user",n)}catch{}home()}
+$("go").onclick=()=>{const n=$("nm").value.trim();if(n)setUser(n)};
+
+/* ---- quiz ---- */
+function start(n){sub=n;const d=D[n];
+ qs=d==="gen"?Array.from({length:10},mathQ):(()=>{let f=d.filter(x=>x[4]==level);if(!f.length)f=d;return shuffle(f).slice(0,10).map(x=>({q:x[0],o:x[1],a:x[2],e:x[3]}))})();
+ i=0;sc=0;show("quiz");ask()}
+function ask(){lock=false;const q=qs[i];$("meta").textContent=`${sub} • ${level=="s"?"Starter":"BECE"} • ${i+1}/${qs.length}`;
+ $("pg").style.width=i/qs.length*100+"%";$("qt").textContent=q.q;$("ex").classList.add("hid");$("nx").classList.add("hid");$("op").innerHTML="";
+ q.o.forEach((t,k)=>{const b=document.createElement("button");b.className="opt";b.textContent="ABCD"[k]+". "+t;b.onclick=()=>pickAns(k,b);$("op").appendChild(b)})}
+function pickAns(k,b){if(lock)return;lock=true;const q=qs[i];if(k==q.a){sc++;b.classList.add("ok")}else{b.classList.add("no");$("op").children[q.a].classList.add("ok")}
+ if(q.e){$("ex").textContent="💡 "+q.e;$("ex").classList.remove("hid")}$("nx").textContent=i==qs.length-1?"See result":"Next";$("nx").classList.remove("hid")}
+$("nx").onclick=()=>{i++;i<qs.length?ask():fin()};
+function fin(){const p=Math.round(sc/qs.length*100);save(sub+" ("+(level=="s"?"Starter":"BECE")+")",p);
+ $("fs").textContent=`${sc}/${qs.length} (${p}%)`;$("fm").textContent=p>=80?"Excellent! 🎉":p>=50?"Good, keep going! 💪":"Keep practising, you will get it! 📖";show("result")}
+$("again").onclick=()=>start(sub);$("hm").onclick=home;
+/* ---- Speed Math ---- */
+function spNext(){sp.cur=pick(NUM[level])();$("spQ").textContent=sp.cur.q}
+function speed(){clearInterval(T);sp={s:0,t:30};show("speed");$("spIn").disabled=false;$("spIn").value="";$("spS").textContent="Score: 0";$("spT").textContent="⏱ 30s";spNext();$("spIn").focus();
+ T=setInterval(()=>{sp.t--;$("spT").textContent="⏱ "+sp.t+"s";if(sp.t<=0){clearInterval(T);$("spIn").disabled=true;save("Speed Math ("+(level=="s"?"Starter":"BECE")+")",sp.s);$("spQ").textContent=`Time up! Score: ${sp.s}`}},1000)}
+$("spIn").onkeydown=e=>{if(e.key!="Enter"||sp.t<=0||$("spIn").value==="")return;if(Number($("spIn").value)===sp.cur.c){sp.s++;$("spS").textContent="Score: "+sp.s}$("spIn").value="";spNext()};
+$("g1").onclick=speed;$("spGo").onclick=speed;$("spH").onclick=home;
+/* ---- French Match ---- */
+const PAIRS=[["Bonjour","Hello"],["Merci","Thank you"],["Chat","Cat"],["Pain","Bread"],["Eau","Water"],["Livre","Book"]];
+function memory(){show("memory");let open=[],moves=0,found=0;$("mvs").textContent="Match the French word with its English meaning. Moves: 0";$("mg").innerHTML="";
+ shuffle(PAIRS.flatMap((p,k)=>[{t:p[0],k},{t:p[1],k}])).forEach(c=>{const b=document.createElement("button");b.className="mc";b.textContent="?";
+  b.onclick=()=>{if(open.length>1||b.classList.contains("up")||b.classList.contains("done"))return;b.classList.add("up");b.textContent=c.t;open.push({b,c});
+   if(open.length==2){moves++;$("mvs").textContent="Moves: "+moves;const[x,y]=open;
+    if(x.c.k==y.c.k){x.b.className=y.b.className="mc done";open=[];if(++found==PAIRS.length)$("mvs").textContent=`🎉 Done in ${moves} moves!`}
+    else setTimeout(()=>{[x,y].forEach(o=>{o.b.className="mc";o.b.textContent="?"});open=[]},800)}};$("mg").appendChild(b)})}
+$("g2").onclick=memory;$("mH").onclick=home;
+if("serviceWorker" in navigator)navigator.serviceWorker.register("sw.js").catch(()=>{});
+let dp;addEventListener("beforeinstallprompt",e=>{e.preventDefault();dp=e;$("inst").classList.remove("hid")});
+$("inst").onclick=()=>{if(dp){dp.prompt();dp=null;$("inst").classList.add("hid")}};
+const N={
+"🔢 Mathematics":[["Square numbers & square roots","A square number is a number multiplied by itself.<br>1²=1, 2²=4, 3²=9, 4²=16, 5²=25 … 12²=144.<br>The square root (√) undoes squaring: √81 = 9 because 9 × 9 = 81."],
+["Integers","Integers are whole numbers: positive, negative or zero.<br>Adding a negative is like subtracting: 5 + (−3) = 2.<br>Subtracting a negative is like adding: 5 − (−3) = 8.<br>Negative × negative = positive. Negative × positive = negative."],
+["Numbers in words","Split the number into parts.<br>456 = four hundred and fifty-six.<br>3,205 = three thousand, two hundred and five."],
+["Percentages (BECE)","Percent means 'out of 100'.<br>20% of 60 = 20/100 × 60 = 12."]],
+"📖 English & Communication":[["Parts of speech","Noun = name of a person, place or thing. Verb = action. Adjective = describes a noun. Adverb = describes a verb (how, when, where). Pronoun = replaces a noun (he, she, they)."],
+["Subject-verb agreement","A singular subject takes a singular verb: She goes to school.<br>A plural subject takes a plural verb: They go to school."]],
+"🔬 Integrated Science":[["Photosynthesis","Green plants make food using sunlight, water and carbon dioxide. This happens in the chloroplasts. They produce glucose (food) and oxygen."],
+["States of matter","Solid, liquid and gas. Melting: solid → liquid. Freezing: liquid → solid. Evaporation: liquid → gas. Condensation: gas → liquid."]],
+"🌍 Social Studies":[["Ghana at a glance","Ghana gained independence on 6th March 1957. Kwame Nkrumah was the first President. The capital is Accra."],
+["ECOWAS","The Economic Community of West African States was formed in 1975 to promote cooperation and trade among West African countries."]],
+"🕊️ RME":[["Good values","Honesty, respect, hard work, obedience and responsibility help us live well with others."],
+["Religions in Ghana","The three main religions are Christianity, Islam and African Traditional Religion."]],
+"💻 ICT":[["Parts of a computer","Input devices (keyboard, mouse) send data in. Output devices (monitor, printer) show results. The CPU processes data. Storage (hard disk, flash drive) keeps files."]],
+"🇫🇷 French":[["Greetings & numbers","Bonjour = hello. Bonsoir = good evening. Merci = thank you. Au revoir = goodbye. Je m'appelle … = my name is …<br>1–5: un, deux, trois, quatre, cinq."]],
+"🗣️ Asante Twi":[["Greetings","Maakye = good morning. Maaha = good afternoon. Maadwo = good evening. Medaase = thank you. Akwaaba = welcome. Aane = yes. Daabi = no."],
+["Numbers & days","1–10: baako, mmienu, mmiɛnsa, anan, anum, nsia, nson, nwɔtwe, nkron, edu.<br>Days: Dwoada (Mon), Benada (Tue), Wukuada (Wed), Yawoada (Thu), Fiada (Fri), Memeneda (Sat), Kwasiada (Sun).<br><i>Check these against your Twi textbook.</i>"]],
+"🛠️ Career Technology":[["Workshop safety","Wear protective clothing, keep tools in their place, follow instructions, and report accidents to your teacher."]],
+"🎨 Creative Arts":[["Colours","Primary colours: red, blue, yellow. Mixing two primaries gives secondary colours: green (blue + yellow), orange (red + yellow), purple (red + blue)."]],
+"✝️ Bible Quiz":[["The Bible","66 books: 39 in the Old Testament and 27 in the New Testament. Genesis is the first book. Jesus chose 12 disciples. David defeated Goliath (1 Samuel 17)."]]};
+function learn(){const c=$("ln");c.innerHTML="";Object.keys(N).forEach(k=>{const d=document.createElement("div");d.className="card";
+ d.innerHTML=`<b>${k}</b>`+N[k].map(n=>`<details><summary>${n[0]}</summary><p>${n[1]}</p></details>`).join("");
+ const b=document.createElement("button");b.className="pri";b.textContent="Practise "+k;b.onclick=()=>start(k);d.appendChild(b);c.appendChild(d)});show("learn")}
+$("lb").onclick=learn;$("lh").onclick=home;
+const go=f=>{$("side").classList.remove("open");f()};
+$("menu").onclick=()=>$("side").classList.toggle("open");
+$("nHome").onclick=()=>go(home);$("nLearn").onclick=()=>go(learn);
+$("nStory").onclick=()=>go(()=>(window.openStories||(()=>alert("Needs internet")))());
+$("nChat").onclick=()=>go(()=>(window.openChat||(()=>alert("Needs internet")))());
+$("nSign").onclick=()=>go(()=>{try{localStorage.removeItem("user")}catch{}user="";home()});
+$("nCall").onclick=()=>go(()=>{window.open("https://meet.google.com/new","_blank");alert("Google Meet opened. Copy the meeting link and send it to your friend in Chat.")});
+home();
+</script>
+<script type="module">
+import {initializeApp} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import {getAuth,GoogleAuthProvider,signInWithPopup,onAuthStateChanged} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import {getFirestore,collection,addDoc,query,orderBy,limit,onSnapshot,serverTimestamp} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+const ok=!FB.apiKey.startsWith("PASTE");let auth,db,me=null,unsub,cur,room=localStorage.getItem("room")||"";
+if(ok){const app=initializeApp(FB);auth=getAuth(app);db=getFirestore(app);onAuthStateChanged(auth,u=>{me=u;if(u)setUser((u.displayName||"Friend").split(" ")[0])})}
+const nm=()=>(me.displayName||"Friend").split(" ")[0];
+$("gsign").onclick=async()=>{if(!ok)return alert("Firebase is not set up yet. Paste your Firebase config into index.html.");try{await signInWithPopup(auth,new GoogleAuthProvider())}catch(e){alert("Sign-in failed: "+e.message)}};
+function askRoom(){const c=(prompt("Type your class code. Use the same code as your friends.")||"").toLowerCase().replace(/[^a-z0-9-]/g,"");if(c){room=c;localStorage.setItem("room",c)}}
+function need(){if(!ok){alert("Chat and stories need Firebase set up first.");return false}if(!me){alert("Tap 'Sign in with Google' on the home screen first.");return false}if(!room)askRoom();return !!room}
+document.querySelectorAll(".chg").forEach(b=>b.onclick=()=>{askRoom();cur=="chat"?openChat():openStories()});
+window.openChat=()=>{if(!need())return;cur="chat";show("chat");$("rc").textContent="Class code: "+room;unsub&&unsub();
+ unsub=onSnapshot(query(collection(db,"rooms",room,"messages"),orderBy("t","desc"),limit(50)),s=>{const b=$("msgs");b.innerHTML="";
+ [...s.docs].reverse().forEach(d=>{const x=d.data(),m=document.createElement("div");m.style.cssText="margin:6px 0;padding:8px;border-radius:10px;background:"+(x.u==me.uid?"#cfe3fb":"#eef1f6");
+ const n=document.createElement("b");n.textContent=x.n+": ";m.append(n,document.createTextNode(x.m));b.appendChild(m)});b.scrollTop=b.scrollHeight})};
+$("send").onclick=async()=>{const t=$("mi").value.trim();if(!t||!me)return;$("mi").value="";await addDoc(collection(db,"rooms",room,"messages"),{n:nm(),u:me.uid,m:t.slice(0,500),t:serverTimestamp()})};
+$("mi").onkeydown=e=>{if(e.key=="Enter")$("send").click()};
+window.openStories=()=>{if(!need())return;cur="stories";show("stories");$("rs").textContent="Class code: "+room;unsub&&unsub();
+ unsub=onSnapshot(query(collection(db,"rooms",room,"stories"),orderBy("t","desc"),limit(30)),s=>{const b=$("slist");b.innerHTML="";let n=0;
+ s.docs.forEach(d=>{const x=d.data();if(x.exp<Date.now())return;n++;const c=document.createElement("div");c.className="card";const i=document.createElement("img");i.src=x.img;i.style.cssText="width:100%;border-radius:10px";
+ const p=document.createElement("div");p.className="m";p.textContent=x.n+(x.cap?": "+x.cap:"");c.append(i,p);b.appendChild(c)});
+ if(!n)b.innerHTML='<p class="m">No stories yet. Post the first one!</p>'})};
+$("sp").onchange=e=>{const f=e.target.files[0];if(!f||!need())return;const r=new FileReader();r.onload=()=>{const im=new Image();im.onload=async()=>{const k=Math.min(1,480/Math.max(im.width,im.height)),c=document.createElement("canvas");c.width=im.width*k;c.height=im.height*k;c.getContext("2d").drawImage(im,0,0,c.width,c.height);
+ await addDoc(collection(db,"rooms",room,"stories"),{n:nm(),u:me.uid,img:c.toDataURL("image/jpeg",.6),cap:$("cap").value.slice(0,100),t:serverTimestamp(),exp:Date.now()+864e5});$("cap").value="";e.target.value=""};im.src=r.result};r.readAsDataURL(f)};
+</script></body></html>
