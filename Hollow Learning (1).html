@@ -1,0 +1,2522 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Hollow Learning</title>
+<meta name="theme-color" content="#0b1437">
+<style>
+:root{--b:#2f6bff;--d:#8fb0ff;--l:#16295a;--r:#e63946;--c:#0f1b3d}
+*{box-sizing:border-box}
+body{margin:0;font-family:system-ui,Arial,sans-serif;background:radial-gradient(circle at 20% 0%,#10215a,#070d1f 60%) fixed;color:#f4f7ff;min-height:100vh}
+header{position:relative;background:linear-gradient(135deg,#0b1437,#1d3fb8 58%,#c62839);color:#fff;padding:22px 16px 26px;text-align:center;border-radius:0 0 26px 26px;box-shadow:0 6px 24px rgba(230,57,70,.25)}
+header h1{margin:0;font-size:1.5rem;letter-spacing:.5px}header p{margin:6px 0 0;opacity:.9}
+main{max-width:680px;margin:0 auto;padding:14px}
+.card{background:var(--c);border:1px solid #1f3a85;border-radius:14px;padding:14px;margin-bottom:12px;box-shadow:0 2px 14px rgba(0,0,0,.4)}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+button{font:inherit;cursor:pointer;border:0;border-radius:10px;padding:11px;color:inherit}
+.sub{background:var(--l);color:#fff;font-weight:600;border:2px solid transparent;text-align:left}.sub:hover{border-color:var(--r)}
+.pri{background:linear-gradient(135deg,var(--b),var(--r));color:#fff;font-weight:600;width:100%;margin-top:8px}
+.lv{background:transparent;color:var(--d);border:2px solid var(--b);width:100%}.lv.on{background:var(--b);color:#fff}
+.opt{display:block;width:100%;text-align:left;background:var(--l);color:#fff;margin:7px 0}.opt:hover{background:#1f3a85}
+.ok{background:#1f7a3d!important}.no{background:#b3262f!important}
+.bar{height:8px;background:#1f3a85;border-radius:5px;overflow:hidden;margin:8px 0}.bar div{height:100%;background:linear-gradient(90deg,var(--b),var(--r));width:0;transition:width .3s}
+.m{color:#9fb3e8;font-size:.9rem}.hid{display:none}.anon #side,.anon #menu{display:none!important}.anon{padding-left:0!important}
+.ex{margin-top:8px;padding:8px;background:#1b2d63;border-left:4px solid var(--r);border-radius:8px;font-size:.9rem}
+.big{font-size:2rem;text-align:center;font-weight:700;color:#fff}
+input{font:inherit;padding:10px;border:2px solid #2a4a9a;background:#0b1437;color:#fff;border-radius:10px;width:100%}
+.mem{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.mc{height:70px;background:var(--b);color:var(--b);font-weight:600;font-size:.9rem}.mc.up{background:var(--l);color:#fff}.mc.done{background:#1f7a3d;color:#fff}
+details{margin:8px 0}summary{cursor:pointer;font-weight:600;color:var(--d)}details p{margin:6px 0 0;line-height:1.5}
+#menu{position:absolute;left:12px;top:16px;background:rgba(255,255,255,.2);color:#fff;font-size:1.3rem;padding:6px 12px}
+#side{position:fixed;top:0;left:0;bottom:0;width:230px;background:#0b1437;border-right:2px solid var(--r);box-shadow:2px 0 14px rgba(0,0,0,.5);transform:translateX(-100%);transition:.25s;z-index:20;padding:16px}
+#side.open{transform:none}#side h3{color:#fff;margin:4px 0 12px}
+#side button{display:block;width:100%;text-align:left;background:var(--l);color:#fff;font-weight:600;margin:8px 0}
+@media(min-width:800px){#side{transform:none}body{padding-left:230px}#menu{display:none}}
+</style></head><body>
+<aside id="side"><h3>📘 Menu</h3><button id="nHome">🏠 Home</button><button id="nLearn">📖 Read lessons</button><button id="nStory">📸 Post a story</button><button id="nChat">💬 Chat with friends</button><button id="nCall">📞 Call a friend</button><button id="nGrade">🎓 Change class / term</button><button id="nSign">👤 Sign in / change name</button></aside>
+<header><button id="menu">☰</button><h1>📘 Hollow Learning</h1><p id="greet"></p></header>
+<main>
+<section id="welcome" class="hid"><div class="card" style="text-align:center;padding:30px 18px">
+<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMAAAADACAIAAADdvvtQAAAWfmNhQlgAABZ+anVtYgAAAB5qdW1kYzJwYQARABCAAACqADibcQNjMnBhAAAAFlhqdW1iAAAAR2p1bWRjMm1hABEAEIAAAKoAOJtxA3VybjpjMnBhOmYyYmY1ZmIwLTgyMzEtNDU2OS1iYTU3LThlNjExMGJmYjUzNwAAAAOTanVtYgAAAClqdW1kYzJhcwARABCAAACqADibcQNjMnBhLmFzc2VydGlvbnMAAAAAuGp1bWIAAABEanVtZGNib3IAEQAQgAAAqgA4m3ETYzJwYS5pbmdyZWRpZW50LnYzAAAAABhjMnNoPN1Cemr26q9hwrz243fMBgAAAGxjYm9yo2lkYzpmb3JtYXRpaW1hZ2UvcG5namluc3RhbmNlSUR4LHhtcDppaWQ6ZWQ3Zjc3MmEtYmMwMy00ODRkLWFiY2QtN2Q0NjdkZDhlNDNhbHJlbGF0aW9uc2hpcGhwYXJlbnRPZgAAAeJqdW1iAAAAQWp1bWRjYm9yABEAEIAAAKoAOJtxE2MycGEuYWN0aW9ucy52MgAAAAAYYzJzaHOnb6GYoNJON9AS+X8oW/sAAAGZY2JvcqJnYWN0aW9uc4KiZmFjdGlvbmtjMnBhLm9wZW5lZGpwYXJhbWV0ZXJzoWtpbmdyZWRpZW50c4GiY3VybHgtc2VsZiNqdW1iZj1jMnBhLmFzc2VydGlvbnMvYzJwYS5pbmdyZWRpZW50LnYzZGhhc2hYIOpnfWfD2bQF/4Us4atMWECsKwoKmX20oUTcn4dlwELmpGZhY3Rpb254HWNvbS5hbnRocm9waWMuY2xhdWRlLnByb3ZpZGVkanBhcmFtZXRlcnOheB9jb20uYW50aHJvcGljLm9yaWdpbi1jb25maWRlbmNlZ3Vua25vd25rZGVzY3JpcHRpb254ZkNsYXVkZSBwcm92aWRlZCB0aGlzIGZpbGUgYXQgdGhlIHJlcXVlc3Qgb2YgYSB1c2VyIGFuZCBtYXkgaGF2ZSBjcmVhdGVkIG9yIG1vZGlmaWVkIHRoZSBmaWxlIGNvbnRlbnRzLm1zb2Z0d2FyZUFnZW50oWRuYW1lZkNsYXVkZXJhbGxBY3Rpb25zSW5jbHVkZWT1AAAAyGp1bWIAAABAanVtZGNib3IAEQAQgAAAqgA4m3ETYzJwYS5oYXNoLmRhdGEAAAAAGGMyc2gIQQ4vk8oZ6LowJtk2/JnhAAAAgGNib3KlY2FsZ2ZzaGEyNTZjcGFkTQAAAAAAAAAAAAAAAABkaGFzaFggK8jLXtgpnhCv282wfSmbS6ZJQwC4Jk3uFZQcVlcsbmtkbmFtZW5qdW1iZiBtYW5pZmVzdGpleGNsdXNpb25zgaJlc3RhcnQYIWZsZW5ndGgZFooAAAI+anVtYgAAACdqdW1kYzJjbAARABCAAACqADibcQNjMnBhLmNsYWltLnYyAAAAAg9jYm9ypWNhbGdmc2hhMjU2aXNpZ25hdHVyZXhNc2VsZiNqdW1iZj0vYzJwYS91cm46YzJwYTpmMmJmNWZiMC04MjMxLTQ1NjktYmE1Ny04ZTYxMTBiZmI1MzcvYzJwYS5zaWduYXR1cmVqaW5zdGFuY2VJRHgseG1wOmlpZDo0N2RlMDBlNS1lMGRhLTQ1OGUtOTQyYi0yNzk1MWE1YzEyMDdyY3JlYXRlZF9hc3NlcnRpb25zg6JjdXJseC1zZWxmI2p1bWJmPWMycGEuYXNzZXJ0aW9ucy9jMnBhLmluZ3JlZGllbnQudjNkaGFzaFgg6md9Z8PZtAX/hSzhq0xYQKwrCgqZfbShRNyfh2XAQuaiY3VybHgqc2VsZiNqdW1iZj1jMnBhLmFzc2VydGlvbnMvYzJwYS5hY3Rpb25zLnYyZGhhc2hYIDebCsXgN2RKHege8224MSmkHVkLMXh4wVXYkyIzjQ80omN1cmx4KXNlbGYjanVtYmY9YzJwYS5hc3NlcnRpb25zL2MycGEuaGFzaC5kYXRhZGhhc2hYIIC1Tia7j0V2UleSlX9Dhf5v/Du8AlijQKTYEwx6AQWKdGNsYWltX2dlbmVyYXRvcl9pbmZvo2RuYW1lb0FudGhyb3BpYyBGaWxlc2d2ZXJzaW9uZTEuMC4wa3NwZWNWZXJzaW9uZTIuNC4wAAAQOGp1bWIAAAAoanVtZGMyY3MAEQAQgAAAqgA4m3EDYzJwYS5zaWduYXR1cmUAAAAQCGNib3LShFkCEqIBJhghWQIKMIICBjCCAY2gAwIBAgIUQOWgCu7COdC+uIP6BkIFPWdVEwAwCgYIKoZIzj0EAwMwSTEXMBUGA1UEChMOQW50aHJvcGljLCBQQkMxLjAsBgNVBAMTJUFudGhyb3BpYyBDb250ZW50IENyZWRlbnRpYWxzIFJvb3QgQ0EwHhcNMjYwODA3MTg0MzU2WhcNMjgwODA2MTk0MzU2WjBEMRcwFQYDVQQKEw5BbnRocm9waWMsIFBCQzEpMCcGA1UEAxMgQW50aHJvcGljIENsYXVkZSBDb250ZW50IFNpZ25pbmcwWTATBgcqhkjOPQIBBggqhkjOPQMBBwNCAASYegpry1AYBRTVNL1CpTlbROnY3dey+UrsF9C3phYrATN3ZHf93Mo8RQN0KOUuOn19P4oWNFWe5n2/She9N7eTo1gwVjAOBgNVHQ8BAf8EBAMCB4AwFQYDVR0lBA4wDAYKKwYBBAGD6F4CATAMBgNVHRMBAf8EAjAAMB8GA1UdIwQYMBaAFM5R4gSBTmRbI/jjxM+aPpzB11zCMAoGCCqGSM49BAMDA2cAMGQCMDFzHRSeAXrSy1WOzkbhPZ6Km2wGTmZ/2gK18k8BQGXyqz88Rdrz6CTX9flAnYNVxgIwcF9c3fVhqmJKpi+UhasNUMko69cyX6STPfta3Q8EjyzDjzoyrol46FP6VFHhvUcJoWNwYWRZDZ4AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA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" alt="HLE" width="96" height="96" style="border-radius:22px;box-shadow:0 4px 18px rgba(230,57,70,.45)"><h2 style="color:var(--d);margin:8px 0">Welcome to Hollow Learning</h2><p class="m">Created by Ellis</p>
+<input id="wn" placeholder="Type your name" style="margin:14px 0 6px"><button class="pri" id="wgo">Get started</button>
+<p class="m" style="margin:14px 0 4px">or</p><button class="pri" id="gsign" style="background:#fff;color:var(--d);border:2px solid var(--b)">Sign in with Google</button></div></section>
+<section id="setup" class="hid"><div class="card" style="text-align:center"><div class="big" id="rk"></div><p class="m" id="rkm"></p>
+<b>Choose your class</b><div class="grid" id="gr" style="margin:10px 0 16px"></div><b>Choose your term</b><div class="grid" id="tm" style="margin:10px 0"></div>
+<button class="pri" id="sgo">Continue</button></div></section>
+<section id="home">
+ <button class="pri hid" id="inst" style="margin:0 0 12px">📲 Install app on your phone</button>
+ <button class="pri" id="lb" style="margin:0 0 12px">📖 Read lessons</button>
+ <div id="login" class="card" style="display:none"><b>Sign in</b>
+  
+  <input id="nm" placeholder="Or type your first name"><button class="pri" id="go">Start</button></div>
+ <div class="card m" id="fact"></div>
+ <div class="card"><b>Choose your level</b><div class="grid" style="margin-top:8px;grid-template-columns:1fr 1fr 1fr"><button class="lv" data-l="s">🌱 Starter</button><button class="lv" data-l="i">📗 Intermediate</button><button class="lv" data-l="l">🏆 Legend</button></div></div>
+ <button class="pri" id="mixb" style="margin:0 0 12px">🏆 Legend Mix • 40 questions from every subject</button>
+ <div class="card"><b>Subjects</b><div class="grid" id="subs" style="margin-top:8px"></div></div>
+ <div class="card"><b>Mini games</b><div class="grid" style="margin-top:8px">
+  <button class="sub" id="g1">⚡ Speed Math<br><span class="m">30 seconds!</span></button>
+  <button class="sub" id="g2">🃏 French Match<br><span class="m">Memory game</span></button>
+  <button class="sub" id="g3">🔤 Word Scramble<br><span class="m">Unscramble 10 words</span></button>
+  <button class="sub" id="g4">✅ True or False<br><span class="m">30-second blitz</span></button>
+  <button class="sub" id="g5">❤️ Survival<br><span class="m">3 lives, all subjects</span></button></div></div>
+ <div class="card"><b>Best scores</b><div id="sc" class="m">None yet</div></div>
+</section>
+<section id="quiz" class="hid"><div class="card"><div class="m" id="meta"></div><div class="bar"><div id="pg"></div></div>
+ <h3 id="qt"></h3><div id="op"></div><div id="ex" class="ex hid"></div><button class="pri hid" id="nx">Next</button></div></section>
+<section id="result" class="hid"><div class="card"><div class="big" id="fs"></div><p id="fm" style="text-align:center"></p>
+ <button class="pri" id="again">Try again</button><button class="pri" id="hm" style="background:#455a75">Home</button></div></section>
+<section id="speed" class="hid"><div class="card"><div class="m" id="spT"></div><div class="m" id="spS"></div>
+ <h2 id="spQ" style="text-align:center"></h2><input id="spIn" type="number" inputmode="numeric" placeholder="Type answer, press Enter">
+ <button class="pri" id="spGo">Restart</button><button class="pri" id="spH" style="background:#455a75">Home</button></div></section>
+<section id="learn" class="hid"><div id="ln"></div><button class="pri" id="lh" style="background:#455a75">Home</button></section>
+<section id="chat" class="hid"><div class="card"><div class="m"><span id="rc"></span> <button class="chg" style="padding:4px 8px">change</button></div>
+<div id="msgs" style="height:55vh;overflow:auto;margin:8px 0"></div><input id="mi" placeholder="Type a message"><button class="pri" id="send">Send</button></div></section>
+<section id="stories" class="hid"><div class="card"><div class="m"><span id="rs"></span> <button class="chg" style="padding:4px 8px">change</button></div>
+<input id="cap" placeholder="Caption (optional)" style="margin:8px 0"><input id="sp" type="file" accept="image/*"><p class="m">Stories disappear after 24 hours.</p></div><div id="slist"></div></section>
+<section id="scr" class="hid"><div class="card"><div class="m" id="scI"></div>
+<h1 id="scW" style="text-align:center;letter-spacing:4px;color:#fff;word-break:break-all"></h1><p class="m" id="scH" style="text-align:center"></p>
+<input id="scIn" placeholder="Type the word" autocomplete="off"><button class="pri" id="scOk">Check</button><button class="pri" id="scHome" style="background:#455a75">Home</button></div></section>
+<section id="tf" class="hid"><div class="card"><div class="m" id="tfI"></div><h3 id="tfQ" style="text-align:center;min-height:80px"></h3>
+<div class="grid"><button class="pri" id="tfT">✅ True</button><button class="pri" id="tfF" style="background:#b3262f">❌ False</button></div>
+<div class="m" id="tfM" style="text-align:center;margin-top:8px"></div><button class="pri" id="tfR">Play again</button><button class="pri" id="tfHome" style="background:#455a75">Home</button></div></section>
+<section id="sv" class="hid"><div class="card"><div class="m" id="svI"></div><h3 id="svQ"></h3><div id="svO"></div><div id="svE" class="ex hid"></div>
+<button class="pri hid" id="svR">Play again</button><button class="pri" id="svHome" style="background:#455a75">Home</button></div></section>
+<section id="memory" class="hid"><div class="card"><div class="m" id="mvs"></div><div class="mem" id="mg" style="margin-top:8px"></div>
+ <button class="pri" id="mH" style="background:#455a75">Home</button></div></section>
+</main>
+<script>
+/* Extra questions. Format: [question, [options], answerPosition, explanation, level]  level: s=Starter i=Intermediate b=BECE l=Legend */
+window.EXTRA={
+"🛠️ Career Technology": [
+[
+"Which tool is used to cut wood?",
+[
+"Pliers",
+"Spanner",
+"Saw",
+"Trowel"
+],
+2,
+"A saw cuts wood.",
+"s"
+],
+[
+"Which tool is used to hit nails?",
+[
+"Screwdriver",
+"Chisel",
+"File",
+"Hammer"
+],
+3,
+"A hammer drives nails in.",
+"s"
+],
+[
+"A trowel is mainly used in...",
+[
+"Sewing",
+"Bricklaying",
+"Farming only",
+"Cooking"
+],
+1,
+"It spreads mortar or plaster.",
+"s"
+],
+[
+"Which is a safety item?",
+[
+"Spoon",
+"Comb",
+"Hard hat",
+"Ball"
+],
+2,
+"A hard hat protects your head.",
+"s"
+],
+[
+"A spanner is used to...",
+[
+"Draw lines",
+"Tighten or loosen nuts",
+"Cut cloth",
+"Paint walls"
+],
+1,
+"Spanners turn nuts and bolts.",
+"s"
+],
+[
+"Which material is a metal?",
+[
+"Rubber",
+"Clay",
+"Iron",
+"Wood"
+],
+2,
+"Iron is a metal.",
+"b"
+],
+[
+"A first aid box is used for...",
+[
+"Storing tools",
+"Painting",
+"Cooking",
+"Treating minor injuries"
+],
+3,
+"It holds items for minor injuries.",
+"b"
+],
+[
+"Which material is good for electrical wires?",
+[
+"Chalk",
+"Copper",
+"Glass",
+"Wood"
+],
+1,
+"Copper conducts electricity well.",
+"b"
+],
+[
+"A technical drawing is used to...",
+[
+"Tell stories",
+"Grow crops",
+"Show how something will be made",
+"Cook food"
+],
+2,
+"It guides makers.",
+"b"
+],
+[
+"Which is a source of power for machines?",
+[
+"Chalk",
+"Sand",
+"Paper",
+"Electricity"
+],
+3,
+"Machines run on electricity or fuel.",
+"b"
+],
+[
+"Which hand tool smooths wood?",
+[
+"Spanner",
+"Trowel",
+"Hacksaw",
+"Plane"
+],
+3,
+"A plane smooths wood.",
+"i"
+],
+[
+"Which is a renewable source of energy?",
+[
+"Petrol",
+"Solar",
+"Coal",
+"Diesel"
+],
+1,
+"Solar energy never runs out.",
+"i"
+],
+[
+"A hacksaw is mainly used to cut...",
+[
+"Metal",
+"Hair",
+"Cloth",
+"Paper"
+],
+0,
+"It has a fine-toothed blade for metal.",
+"l"
+],
+[
+"Which instrument measures angles?",
+[
+"Ruler",
+"Thermometer",
+"Spirit level",
+"Protractor"
+],
+3,
+"A protractor measures angles.",
+"l"
+],
+[
+"Which safety colour usually means danger or stop?",
+[
+"White",
+"Red",
+"Blue",
+"Green"
+],
+1,
+"Red warns of danger.",
+"l"
+],
+[
+"Which tool measures angles?",
+[
+"Ruler",
+"Hammer",
+"Saw",
+"Protractor"
+],
+3,
+"Protractor.",
+"i"
+],
+[
+"Which is a hand tool?",
+[
+"Drilling machine",
+"Screwdriver",
+"Lathe",
+"Generator"
+],
+1,
+"A screwdriver.",
+"i"
+],
+[
+"Sandpaper is used to...",
+[
+"Smooth surfaces",
+"Measure length",
+"Cut metal",
+"Join wood"
+],
+0,
+"It smooths rough surfaces.",
+"l"
+],
+[
+"Which is a renewable source of energy?",
+[
+"Coal",
+"Petrol",
+"Diesel",
+"Solar"
+],
+3,
+"The sun keeps shining.",
+"l"
+],
+[
+"PPE stands for...",
+[
+"Primary Practical Exercise",
+"Personal Protective Equipment",
+"Paint and Plaster Equipment",
+"Public Power Engine"
+],
+1,
+"PPE.",
+"l"
+]
+],
+"🎨 Creative Arts": [
+[
+"Which is a secondary colour?",
+[
+"Yellow",
+"Green",
+"Red",
+"Blue"
+],
+1,
+"Green = blue + yellow.",
+"s"
+],
+[
+"A drum is a... instrument.",
+[
+"Electronic",
+"String",
+"Wind",
+"Percussion"
+],
+3,
+"You hit a drum.",
+"s"
+],
+[
+"Which is a Ghanaian dance?",
+[
+"Waltz",
+"Tango",
+"Adowa",
+"Ballet"
+],
+2,
+"Adowa is an Akan dance.",
+"s"
+],
+[
+"Kente cloth is woven in...",
+[
+"Round pieces",
+"Squares only",
+"Narrow strips",
+"One huge sheet"
+],
+2,
+"Strips are woven then sewn together.",
+"s"
+],
+[
+"Line, shape and colour are...",
+[
+"Days of the week",
+"Types of food",
+"Parts of a computer",
+"Elements of art"
+],
+3,
+"They are basic art elements.",
+"s"
+],
+[
+"Adinkra symbols are used to...",
+[
+"Show ideas and proverbs",
+"Count money",
+"Measure land",
+"Cook food"
+],
+0,
+"Each symbol carries a meaning.",
+"b"
+],
+[
+"The 'Gye Nyame' symbol stands for...",
+[
+"The supremacy of God",
+"Peace",
+"Hard work",
+"Unity"
+],
+0,
+"Gye Nyame = except God.",
+"b"
+],
+[
+"Mixing red and blue gives...",
+[
+"Brown",
+"Purple",
+"Green",
+"Orange"
+],
+1,
+"Red + blue = purple.",
+"b"
+],
+[
+"Pottery is made from...",
+[
+"Metal sheets",
+"Clay",
+"Glass",
+"Paper"
+],
+1,
+"Clay is shaped then fired.",
+"b"
+],
+[
+"Adowa is mainly performed by the...",
+[
+"Ga",
+"Dagomba",
+"Ewe",
+"Akan (Asante)"
+],
+3,
+"Adowa is an Akan dance.",
+"b"
+],
+[
+"Which art form shapes clay into pots?",
+[
+"Printing",
+"Drawing",
+"Weaving",
+"Pottery"
+],
+3,
+"Pottery.",
+"i"
+],
+[
+"A pattern repeated over and over shows...",
+[
+"Repetition",
+"Contrast",
+"Emphasis",
+"Balance"
+],
+0,
+"Repetition.",
+"i"
+],
+[
+"The element of art for how light or dark a colour is...",
+[
+"Value",
+"Form",
+"Line",
+"Texture"
+],
+0,
+"Value.",
+"l"
+],
+[
+"Tie-dye is an example of...",
+[
+"Wood carving",
+"Fabric decoration",
+"Clay modelling",
+"Metal work"
+],
+1,
+"Tie-dye decorates cloth.",
+"l"
+],
+[
+"Batik decorates cloth using...",
+[
+"Glue",
+"Wax and dye",
+"Clay",
+"Paint only"
+],
+1,
+"Wax resists the dye.",
+"l"
+],
+[
+"Which instrument has strings?",
+[
+"Gong",
+"Drum",
+"Flute",
+"Guitar"
+],
+3,
+"Guitar.",
+"i"
+],
+[
+"Which is a warm colour?",
+[
+"Red",
+"Blue",
+"Violet",
+"Green"
+],
+0,
+"Red is warm.",
+"i"
+],
+[
+"The art of paper folding is called...",
+[
+"Origami",
+"Pottery",
+"Weaving",
+"Batik"
+],
+0,
+"Origami.",
+"l"
+],
+[
+"Batik is cloth decorated using...",
+[
+"Wood carving",
+"Wax and dye",
+"Clay",
+"Metal"
+],
+1,
+"Wax-resist dyeing.",
+"l"
+],
+[
+"Which is a cool colour?",
+[
+"Orange",
+"Blue",
+"Yellow",
+"Red"
+],
+1,
+"Blue is cool.",
+"l"
+]
+],
+"🕊️ RME": [
+[
+"Which is a good habit?",
+[
+"Telling the truth",
+"Fighting",
+"Lying",
+"Stealing"
+],
+0,
+"Honesty is a good habit.",
+"s"
+],
+[
+"Which shows respect?",
+[
+"Shouting at elders",
+"Greeting elders",
+"Mocking people",
+"Ignoring people"
+],
+1,
+"Greeting shows respect.",
+"s"
+],
+[
+"Christians worship in a...",
+[
+"Stadium",
+"Mosque",
+"Market",
+"Church"
+],
+3,
+"Church.",
+"s"
+],
+[
+"Muslims worship in a...",
+[
+"Classroom",
+"Mosque",
+"Bank",
+"Church"
+],
+1,
+"Mosque.",
+"s"
+],
+[
+"Which is a virtue?",
+[
+"Pride",
+"Kindness",
+"Greed",
+"Anger"
+],
+1,
+"Kindness is a virtue.",
+"s"
+],
+[
+"The festival that ends Ramadan is...",
+[
+"Pentecost",
+"Easter",
+"Christmas",
+"Eid al-Fitr"
+],
+3,
+"Eid al-Fitr.",
+"b"
+],
+[
+"Christians celebrate Jesus' birth at...",
+[
+"Christmas",
+"Easter",
+"Eid",
+"Pentecost"
+],
+0,
+"Christmas.",
+"b"
+],
+[
+"Easter remembers Jesus'...",
+[
+"Resurrection",
+"Birth",
+"Baptism",
+"Temptation"
+],
+0,
+"Easter = the resurrection.",
+"b"
+],
+[
+"The five daily prayers in Islam are called...",
+[
+"Hajj",
+"Zakat",
+"Sawm",
+"Salat"
+],
+3,
+"Salat.",
+"b"
+],
+[
+"Giving to the poor in Islam is called...",
+[
+"Hajj",
+"Zakat",
+"Salat",
+"Sawm"
+],
+1,
+"Zakat is almsgiving.",
+"b"
+],
+[
+"A major Islamic festival is...",
+[
+"Epiphany",
+"Eid al-Adha",
+"Easter",
+"Pentecost"
+],
+1,
+"Eid al-Adha.",
+"i"
+],
+[
+"The Ten Commandments are found in...",
+[
+"Matthew",
+"Acts",
+"Exodus",
+"Psalms"
+],
+2,
+"Exodus 20.",
+"i"
+],
+[
+"The Golden Rule says to treat others...",
+[
+"With fear",
+"Without care",
+"As they treat you",
+"As you want to be treated"
+],
+3,
+"Do to others what you want done to you.",
+"l"
+],
+[
+"In Akan tradition the Supreme Being is called...",
+[
+"Nana",
+"Onyame",
+"Asase Yaa",
+"Abosom"
+],
+1,
+"Onyame.",
+"l"
+],
+[
+"The pilgrimage to Mecca is called...",
+[
+"Zakat",
+"Sawm",
+"Salat",
+"Hajj"
+],
+3,
+"Hajj.",
+"l"
+],
+[
+"Islam follows the teachings of Prophet...",
+[
+"Jesus",
+"Muhammad",
+"Moses",
+"Abraham"
+],
+1,
+"Muhammad.",
+"i"
+],
+[
+"The Golden Rule says we should...",
+[
+"Always win",
+"Keep secrets",
+"Treat others as we want to be treated",
+"Avoid everybody"
+],
+2,
+"Treat others as you want to be treated.",
+"i"
+],
+[
+"The number of pillars of Islam is...",
+[
+"Seven",
+"Ten",
+"Three",
+"Five"
+],
+3,
+"Five pillars.",
+"l"
+],
+[
+"The first four books of the New Testament are called the...",
+[
+"Psalms",
+"Gospels",
+"Epistles",
+"Prophets"
+],
+1,
+"Matthew, Mark, Luke and John.",
+"l"
+],
+[
+"Muslims fasting in Ramadan eat and drink from...",
+[
+"Dawn to sunset",
+"All day",
+"Noon to night",
+"Sunset to dawn"
+],
+3,
+"They fast from dawn to sunset.",
+"l"
+]
+],
+"💻 ICT": [
+[
+"Which is an output device?",
+[
+"Scanner",
+"Mouse",
+"Keyboard",
+"Printer"
+],
+3,
+"A printer outputs on paper.",
+"s"
+],
+[
+"A mouse is used to...",
+[
+"Point and click",
+"Store files",
+"Print",
+"Cool the computer"
+],
+0,
+"It moves the pointer.",
+"s"
+],
+[
+"Which is a storage device?",
+[
+"Mouse",
+"Monitor",
+"Flash drive",
+"Speaker"
+],
+2,
+"It keeps your files.",
+"s"
+],
+[
+"The 'brain' of a computer is the...",
+[
+"Keyboard",
+"Screen",
+"CPU",
+"Printer"
+],
+2,
+"The CPU processes data.",
+"s"
+],
+[
+"Which key types capital letters when held?",
+[
+"Enter",
+"Space",
+"Shift",
+"Delete"
+],
+2,
+"Hold Shift.",
+"s"
+],
+[
+"Which software is used to type letters?",
+[
+"Browser",
+"Calculator",
+"Word processor",
+"Antivirus"
+],
+2,
+"Like Microsoft Word.",
+"b"
+],
+[
+"Which is used for presentations?",
+[
+"PowerPoint",
+"Paint",
+"Excel",
+"Notepad"
+],
+0,
+"PowerPoint makes slides.",
+"b"
+],
+[
+"WWW stands for...",
+[
+"Wide World Web",
+"World Web Window",
+"Web World Wide",
+"World Wide Web"
+],
+3,
+"World Wide Web.",
+"b"
+],
+[
+"A computer virus is a...",
+[
+"Harmful program",
+"Type of keyboard",
+"Safe app",
+"Printer part"
+],
+0,
+"It can damage files.",
+"b"
+],
+[
+"Which is used to browse the internet?",
+[
+"Chrome",
+"Word",
+"Paint",
+"Excel"
+],
+0,
+"Chrome is a web browser.",
+"b"
+],
+[
+"Software that manages the computer is the...",
+[
+"Calculator app",
+"Game",
+"Operating system",
+"Browser"
+],
+2,
+"The OS manages hardware and programs.",
+"i"
+],
+[
+"RAM stands for...",
+[
+"Random Access Memory",
+"Rapid Active Memory",
+"Read Access Memory",
+"Run All Memory"
+],
+0,
+"Random Access Memory.",
+"i"
+],
+[
+"Which is a spreadsheet program?",
+[
+"Microsoft Word",
+"Paint",
+"Microsoft Excel",
+"Notepad"
+],
+2,
+"Excel.",
+"l"
+],
+[
+"A strong password should...",
+[
+"Be shared with friends",
+"Mix letters, numbers and symbols",
+"Be your name",
+"Be 1234"
+],
+1,
+"Mixing characters makes it hard to guess.",
+"l"
+],
+[
+"1 kilobyte is about how many bytes?",
+[
+"1,000,000",
+"1,024",
+"100",
+"10"
+],
+1,
+"1 KB = 1,024 bytes.",
+"l"
+],
+[
+"Which unit is the biggest?",
+[
+"Nibble",
+"Bit",
+"Kilobyte",
+"Byte"
+],
+2,
+"1 KB = 1,024 bytes.",
+"i"
+],
+[
+"Ctrl + C is used to...",
+[
+"Copy",
+"Cut",
+"Paste",
+"Undo"
+],
+0,
+"Copy.",
+"i"
+],
+[
+"Ctrl + V is used to...",
+[
+"Copy",
+"Save",
+"Paste",
+"Print"
+],
+2,
+"Paste.",
+"l"
+],
+[
+"Which of these is a search engine?",
+[
+"Windows",
+"Google",
+"Excel",
+"Paint"
+],
+1,
+"Google Search.",
+"l"
+],
+[
+"RAM stands for...",
+[
+"Run All Memory",
+"Random Access Memory",
+"Read Active Memory",
+"Rapid Access Module"
+],
+1,
+"Random Access Memory.",
+"l"
+]
+],
+"🇫🇷 French": [
+[
+"'Au revoir' means...",
+[
+"Goodbye",
+"Thanks",
+"Hello",
+"Sorry"
+],
+0,
+"Au revoir = goodbye.",
+"s"
+],
+[
+"'Oui' means...",
+[
+"Please",
+"Maybe",
+"Yes",
+"No"
+],
+2,
+"Oui = yes.",
+"s"
+],
+[
+"'Non' means...",
+[
+"Hello",
+"Thanks",
+"No",
+"Yes"
+],
+2,
+"Non = no.",
+"s"
+],
+[
+"'Un' is the number...",
+[
+"3",
+"4",
+"1",
+"2"
+],
+2,
+"un = 1.",
+"s"
+],
+[
+"'Livre' means...",
+[
+"Book",
+"Water",
+"Cat",
+"Bread"
+],
+0,
+"Livre = book.",
+"s"
+],
+[
+"'Pain' means...",
+[
+"Rice",
+"Water",
+"Milk",
+"Bread"
+],
+3,
+"Pain = bread.",
+"b"
+],
+[
+"'Eau' means...",
+[
+"Water",
+"Egg",
+"Fire",
+"Air"
+],
+0,
+"Eau = water.",
+"b"
+],
+[
+"'S'il vous plaît' means...",
+[
+"Goodbye",
+"Please",
+"Excuse me",
+"Thank you"
+],
+1,
+"Please.",
+"b"
+],
+[
+"'Bonsoir' means...",
+[
+"Good evening",
+"Good morning",
+"Goodbye",
+"Thank you"
+],
+0,
+"Bonsoir = good evening.",
+"b"
+],
+[
+"'Cinq' is the number...",
+[
+"5",
+"6",
+"4",
+"10"
+],
+0,
+"cinq = 5.",
+"b"
+],
+[
+"'Comment ça va ?' means...",
+[
+"What is your name?",
+"Where are you from?",
+"How are you?",
+"How old are you?"
+],
+2,
+"A greeting.",
+"i"
+],
+[
+"'Je suis élève' means...",
+[
+"I am tired",
+"I am a student",
+"I am hungry",
+"I am a teacher"
+],
+1,
+"Élève = pupil.",
+"i"
+],
+[
+"'Quel âge as-tu ?' means...",
+[
+"Where do you live?",
+"What time is it?",
+"What do you want?",
+"How old are you?"
+],
+3,
+"Asking age.",
+"l"
+],
+[
+"'Sept' is the number...",
+[
+"6",
+"8",
+"7",
+"9"
+],
+2,
+"sept = 7.",
+"l"
+],
+[
+"'Lundi' is...",
+[
+"Sunday",
+"Monday",
+"Friday",
+"Tuesday"
+],
+1,
+"Lundi = Monday.",
+"l"
+],
+[
+"'Merci beaucoup' means...",
+[
+"Good night",
+"Goodbye",
+"Thank you very much",
+"Excuse me"
+],
+2,
+"Beaucoup = a lot.",
+"i"
+],
+[
+"'Je suis élève' means...",
+[
+"I am lost",
+"I am a pupil",
+"I am tall",
+"I am hungry"
+],
+1,
+"Élève = pupil.",
+"i"
+],
+[
+"'Lundi' is...",
+[
+"Friday",
+"Sunday",
+"Tuesday",
+"Monday"
+],
+3,
+"Lundi = Monday.",
+"l"
+],
+[
+"'Vendredi' is...",
+[
+"Thursday",
+"Saturday",
+"Friday",
+"Wednesday"
+],
+2,
+"Vendredi = Friday.",
+"l"
+],
+[
+"'Rouge' means...",
+[
+"Green",
+"Red",
+"Blue",
+"Black"
+],
+1,
+"Rouge = red.",
+"l"
+]
+],
+"🔬 Integrated Science": [
+[
+"Which planet do we live on?",
+[
+"Jupiter",
+"Venus",
+"Mars",
+"Earth"
+],
+3,
+"We live on Earth.",
+"s"
+],
+[
+"Which organs help us breathe?",
+[
+"Heart",
+"Stomach",
+"Skin",
+"Lungs"
+],
+3,
+"Lungs.",
+"s"
+],
+[
+"Which is a living thing?",
+[
+"Chair",
+"Tree",
+"Water",
+"Stone"
+],
+1,
+"Trees grow and reproduce.",
+"s"
+],
+[
+"The Sun is a...",
+[
+"Moon",
+"Comet",
+"Planet",
+"Star"
+],
+3,
+"The Sun is a star.",
+"s"
+],
+[
+"The chemical formula of water is...",
+[
+"CO₂",
+"O₂",
+"NaCl",
+"H₂O"
+],
+3,
+"Two hydrogen, one oxygen.",
+"b"
+],
+[
+"Which blood cells fight infection?",
+[
+"Platelets",
+"Plasma",
+"Red blood cells",
+"White blood cells"
+],
+3,
+"White cells defend the body.",
+"b"
+],
+[
+"Which force pulls objects to the Earth?",
+[
+"Magnetism",
+"Friction",
+"Tension",
+"Gravity"
+],
+3,
+"Gravity.",
+"b"
+],
+[
+"A material that lets electricity pass is a...",
+[
+"Conductor",
+"Fuel",
+"Solvent",
+"Insulator"
+],
+0,
+"Conductor.",
+"b"
+],
+[
+"Which gas makes up most of the air?",
+[
+"Hydrogen",
+"Oxygen",
+"Carbon dioxide",
+"Nitrogen"
+],
+3,
+"About 78% is nitrogen.",
+"i"
+],
+[
+"Which plant part absorbs water from the soil?",
+[
+"Leaves",
+"Roots",
+"Flowers",
+"Stem"
+],
+1,
+"Roots absorb water.",
+"i"
+],
+[
+"The SI unit of electric current is the...",
+[
+"Volt",
+"Watt",
+"Ohm",
+"Ampere"
+],
+3,
+"Current is measured in amperes.",
+"l"
+],
+[
+"A substance with pH 3 is...",
+[
+"Neutral",
+"Alkaline",
+"Salty",
+"Acidic"
+],
+3,
+"Below pH 7 is acidic.",
+"l"
+],
+[
+"Speed is calculated as...",
+[
+"Force ÷ area",
+"Distance ÷ time",
+"Mass × time",
+"Time ÷ distance"
+],
+1,
+"Speed = distance ÷ time.",
+"l"
+],
+[
+"Which gas do humans breathe out?",
+[
+"Helium",
+"Oxygen",
+"Nitrogen",
+"Carbon dioxide"
+],
+3,
+"We breathe out CO₂.",
+"i"
+],
+[
+"Which instrument measures temperature?",
+[
+"Barometer",
+"Thermometer",
+"Ammeter",
+"Ruler"
+],
+1,
+"Thermometer.",
+"i"
+],
+[
+"Plants losing water through their leaves is called...",
+[
+"Respiration",
+"Germination",
+"Digestion",
+"Transpiration"
+],
+3,
+"Transpiration.",
+"l"
+],
+[
+"Which part of the eye adjusts the size of the pupil?",
+[
+"Retina",
+"Optic nerve",
+"Eyelash",
+"Iris"
+],
+3,
+"The iris.",
+"l"
+],
+[
+"The unit of electric current is the...",
+[
+"Watt",
+"Ampere",
+"Ohm",
+"Volt"
+],
+1,
+"Ampere (amp).",
+"l"
+]
+],
+"🌍 Social Studies": [
+[
+"The Ghana flag colours from top to bottom are...",
+[
+"Red, gold, green",
+"Green, gold, red",
+"Black, gold, green",
+"Red, white, blue"
+],
+0,
+"Red, gold, green with a black star.",
+"s"
+],
+[
+"The capital of Ghana is...",
+[
+"Kumasi",
+"Tamale",
+"Accra",
+"Takoradi"
+],
+2,
+"Accra.",
+"s"
+],
+[
+"Ghana is in which continent?",
+[
+"Africa",
+"Europe",
+"Asia",
+"Australia"
+],
+0,
+"Africa.",
+"s"
+],
+[
+"The highest court in Ghana is the...",
+[
+"Circuit Court",
+"Supreme Court",
+"High Court",
+"District Court"
+],
+1,
+"Supreme Court.",
+"b"
+],
+[
+"Who makes laws in Ghana?",
+[
+"Army",
+"Courts",
+"Parliament",
+"Police"
+],
+2,
+"Parliament makes laws.",
+"b"
+],
+[
+"Ghana's only major natural lake is...",
+[
+"Lake Kainji",
+"Lake Bosomtwe",
+"Lake Volta",
+"Lake Chad"
+],
+1,
+"Lake Volta is man-made.",
+"b"
+],
+[
+"The head of state of Ghana is the...",
+[
+"Speaker",
+"Chief Justice",
+"Minister",
+"President"
+],
+3,
+"The President.",
+"b"
+],
+[
+"Which body organises Ghana's elections?",
+[
+"Judiciary",
+"Electoral Commission",
+"Police",
+"Parliament"
+],
+1,
+"Electoral Commission.",
+"b"
+],
+[
+"ECOWAS was formed in...",
+[
+"1975",
+"1963",
+"1957",
+"1990"
+],
+0,
+"The Treaty of Lagos, 1975.",
+"i"
+],
+[
+"Which is a duty of a good citizen?",
+[
+"Cheating in exams",
+"Paying taxes",
+"Littering",
+"Breaking laws"
+],
+1,
+"Citizens pay taxes.",
+"i"
+],
+[
+"The 1992 Constitution began Ghana's...",
+[
+"Second Republic",
+"Fourth Republic",
+"Third Republic",
+"First Republic"
+],
+1,
+"The Fourth Republic began in 1993.",
+"l"
+],
+[
+"The African Union replaced which body in 2002?",
+[
+"League of Nations",
+"SADC",
+"ECOWAS",
+"Organisation of African Unity"
+],
+3,
+"OAU became the AU.",
+"l"
+],
+[
+"Ghana became a republic in...",
+[
+"1957",
+"1960",
+"1966",
+"1992"
+],
+1,
+"On 1 July 1960.",
+"l"
+],
+[
+"Ghana's currency is the...",
+[
+"Cedi",
+"Dollar",
+"Naira",
+"Rand"
+],
+0,
+"Cedi.",
+"i"
+],
+[
+"Kumasi is the capital of which region?",
+[
+"Volta Region",
+"Ashanti Region",
+"Northern Region",
+"Eastern Region"
+],
+1,
+"Ashanti Region.",
+"i"
+],
+[
+"Ghana's first Prime Minister was...",
+[
+"Hilla Limann",
+"Kwame Nkrumah",
+"J.B. Danquah",
+"K.A. Busia"
+],
+1,
+"Nkrumah led from 1957.",
+"l"
+],
+[
+"The Fourth Republic began under the...",
+[
+"1969 Constitution",
+"1979 Constitution",
+"1957 Constitution",
+"1992 Constitution"
+],
+3,
+"1992 Constitution.",
+"l"
+],
+[
+"Which ocean borders Ghana?",
+[
+"Indian Ocean",
+"Atlantic Ocean",
+"Pacific Ocean",
+"Arctic Ocean"
+],
+1,
+"Gulf of Guinea, part of the Atlantic.",
+"l"
+]
+],
+"📖 English & Communication": [
+[
+"Which sentence is correct?",
+[
+"I is a student.",
+"I am a student.",
+"I be student.",
+"I are a student."
+],
+1,
+"'I am' is correct.",
+"s"
+],
+[
+"A word that describes a noun is a...",
+[
+"Adjective",
+"Verb",
+"Pronoun",
+"Adverb"
+],
+0,
+"Adjective.",
+"s"
+],
+[
+"The past tense of 'go' is...",
+[
+"Gone",
+"Went",
+"Going",
+"Goed"
+],
+1,
+"Went.",
+"s"
+],
+[
+"The opposite of 'hot' is...",
+[
+"Warm",
+"Cold",
+"Sun",
+"Boil"
+],
+1,
+"Cold.",
+"s"
+],
+[
+"Choose the correct word: '___ going home.'",
+[
+"There",
+"Theyre",
+"They're",
+"Their"
+],
+2,
+"They're = they are.",
+"b"
+],
+[
+"A group of words with a subject and a verb is a...",
+[
+"Letter",
+"Title",
+"Clause",
+"Noun"
+],
+2,
+"Clause.",
+"b"
+],
+[
+"'He ran quickly.' The adverb is...",
+[
+"He",
+"quickly",
+"None",
+"ran"
+],
+1,
+"Quickly tells how he ran.",
+"b"
+],
+[
+"Which is a simile?",
+[
+"Time flies.",
+"The wind whispered.",
+"She is a lion.",
+"She is as brave as a lion."
+],
+3,
+"A simile compares using 'as' or 'like'.",
+"b"
+],
+[
+"Choose the correct sentence.",
+[
+"Neither of the boys was late.",
+"Neither of the boys were late.",
+"Neither of the boys are late.",
+"Neither of the boys have late."
+],
+0,
+"'Neither' takes a singular verb.",
+"i"
+],
+[
+"The plural of 'tooth' is...",
+[
+"tooths",
+"teeth",
+"teeths",
+"toothes"
+],
+1,
+"Irregular plural.",
+"i"
+],
+[
+"'The classroom was a zoo.' This is a...",
+[
+"Metaphor",
+"Hyperbole",
+"Personification",
+"Simile"
+],
+0,
+"It says one thing IS another.",
+"l"
+],
+[
+"'She was ___ by the good news.' Best word:",
+[
+"eluded",
+"elected",
+"elated",
+"elapsed"
+],
+2,
+"Elated = very happy.",
+"l"
+],
+[
+"Which sentence is in the passive voice?",
+[
+"Kofi kicked the ball.",
+"Kofi will kick the ball.",
+"The ball was kicked by Kofi.",
+"Kofi is kicking the ball."
+],
+2,
+"The subject receives the action.",
+"l"
+],
+[
+"Which is the plural of 'mouse'?",
+[
+"Mice",
+"Mouses",
+"Mices",
+"Mousen"
+],
+0,
+"Irregular plural.",
+"i"
+],
+[
+"Choose the correct sentence.",
+[
+"She have finished her work.",
+"She has finished her work.",
+"She finish her work yesterday.",
+"She finishing her work."
+],
+1,
+"'Has' goes with 'she'.",
+"i"
+],
+[
+"Which word is spelt correctly?",
+[
+"Necessary",
+"Neccesary",
+"Necesary",
+"Neccessary"
+],
+0,
+"One c and two s.",
+"l"
+],
+[
+"'Her smile was as bright as the sun.' This is a...",
+[
+"Proverb",
+"Idiom",
+"Simile",
+"Metaphor"
+],
+2,
+"It uses 'as ... as'.",
+"l"
+],
+[
+"Which is a conjunction?",
+[
+"Quickly",
+"Happy",
+"Because",
+"Table"
+],
+2,
+"It joins ideas.",
+"l"
+]
+],
+"✝️ Bible Quiz": [
+[
+"Who was the first man created by God?",
+[
+"Abraham",
+"Noah",
+"Adam",
+"Moses"
+],
+2,
+"Adam.",
+"s"
+],
+[
+"Who was thrown into the lions' den?",
+[
+"Daniel",
+"David",
+"Paul",
+"Peter"
+],
+0,
+"Daniel.",
+"s"
+],
+[
+"Where was Jesus born?",
+[
+"Nazareth",
+"Egypt",
+"Bethlehem",
+"Jerusalem"
+],
+2,
+"Bethlehem.",
+"s"
+],
+[
+"Who denied Jesus three times?",
+[
+"Judas",
+"John",
+"Thomas",
+"Peter"
+],
+3,
+"Peter.",
+"s"
+],
+[
+"Who betrayed Jesus?",
+[
+"Thomas",
+"Judas Iscariot",
+"Matthew",
+"Peter"
+],
+1,
+"Judas Iscariot.",
+"b"
+],
+[
+"Which book comes after Genesis?",
+[
+"Leviticus",
+"Exodus",
+"Numbers",
+"Joshua"
+],
+1,
+"Exodus.",
+"b"
+],
+[
+"Who wrote most of the Psalms?",
+[
+"David",
+"Solomon",
+"Moses",
+"Paul"
+],
+0,
+"David.",
+"b"
+],
+[
+"The Ten Commandments were given to...",
+[
+"Abraham",
+"Elijah",
+"Joshua",
+"Moses"
+],
+3,
+"Moses.",
+"b"
+],
+[
+"Who interpreted Pharaoh's dreams in Egypt?",
+[
+"Aaron",
+"Joseph",
+"Daniel",
+"Moses"
+],
+1,
+"Genesis 41.",
+"i"
+],
+[
+"Who was Jesus' mother?",
+[
+"Ruth",
+"Mary",
+"Elizabeth",
+"Martha"
+],
+1,
+"Mary.",
+"i"
+],
+[
+"Which apostle was first called Saul?",
+[
+"Barnabas",
+"Paul",
+"Peter",
+"Silas"
+],
+1,
+"Saul became Paul.",
+"l"
+],
+[
+"How many books are in the New Testament?",
+[
+"39",
+"66",
+"27",
+"12"
+],
+2,
+"27 books.",
+"l"
+],
+[
+"Who was Peter's brother, also a disciple?",
+[
+"John",
+"James",
+"Philip",
+"Andrew"
+],
+3,
+"Andrew.",
+"l"
+],
+[
+"Who was the mother of Jesus?",
+[
+"Esther",
+"Mary",
+"Ruth",
+"Martha"
+],
+1,
+"Mary.",
+"i"
+],
+[
+"How many days and nights did the flood rain last?",
+[
+"3",
+"40",
+"12",
+"7"
+],
+1,
+"Forty (Genesis 7).",
+"i"
+],
+[
+"Who interpreted Pharaoh's dreams?",
+[
+"Daniel",
+"Joseph",
+"Moses",
+"Aaron"
+],
+1,
+"Joseph (Genesis 41).",
+"l"
+],
+[
+"Which disciple was a tax collector?",
+[
+"Peter",
+"John",
+"Matthew",
+"Andrew"
+],
+2,
+"Matthew.",
+"l"
+],
+[
+"Which king of Israel was famous for wisdom?",
+[
+"David",
+"Saul",
+"Ahab",
+"Solomon"
+],
+3,
+"Solomon.",
+"l"
+]
+],
+"🗣️ Asante Twi": [
+[
+"'Me din de Kofi' means...",
+[
+"My name is Kofi",
+"Kofi is here",
+"I see Kofi",
+"I love Kofi"
+],
+0,
+"Me din de = my name is.",
+"i"
+],
+[
+"'Mepawokyɛw' is used to say...",
+[
+"Sorry",
+"Welcome",
+"Goodbye",
+"Please"
+],
+3,
+"Mepawokyɛw = please.",
+"i"
+],
+[
+"The Twi word for 'school' is...",
+[
+"Aduane",
+"Nsuo",
+"Sukuu",
+"Nwoma"
+],
+2,
+"Sukuu = school.",
+"l"
+],
+[
+"'Wukuada' is which day?",
+[
+"Thursday",
+"Monday",
+"Wednesday",
+"Tuesday"
+],
+2,
+"Wukuada = Wednesday.",
+"l"
+],
+[
+"'Yawoada' is which day?",
+[
+"Wednesday",
+"Thursday",
+"Saturday",
+"Friday"
+],
+1,
+"Yawoada = Thursday.",
+"l"
+],
+[
+"'Nkron' is the number...",
+[
+"9",
+"10",
+"6",
+"7"
+],
+0,
+"nkron = 9.",
+"i"
+],
+[
+"'Nson' is the number...",
+[
+"5",
+"8",
+"6",
+"7"
+],
+3,
+"nson = 7.",
+"i"
+],
+[
+"'Dwoada' is...",
+[
+"Sunday",
+"Friday",
+"Monday",
+"Tuesday"
+],
+2,
+"Dwoada = Monday.",
+"l"
+],
+[
+"'Benada' is...",
+[
+"Wednesday",
+"Saturday",
+"Tuesday",
+"Monday"
+],
+2,
+"Benada = Tuesday.",
+"l"
+],
+[
+"'Yawoada' is...",
+[
+"Wednesday",
+"Thursday",
+"Tuesday",
+"Friday"
+],
+1,
+"Yawoada = Thursday.",
+"l"
+]
+]
+};
+</script>
+<script>
+const FB={apiKey:"PASTE_YOUR_API_KEY",authDomain:"",projectId:"",appId:""}; // paste your Firebase config here (see instructions)
+/* ===== ADD QUESTIONS HERE =====
+ [ "question", ["A","B","C","D"], answerPosition(0-3), "explanation", "s" or "b" ]
+ "s" = Starter, "b" = BECE level. Maths is generated automatically. */
+const D={
+"📖 English & Communication":[
+["Choose the correct plural of 'child'.",["childs","children","childrens","childes"],1,"Irregular plural.","s"],
+["Which word means the same as 'happy'?",["sad","joyful","angry","tired"],1,"Joyful = happy.","s"],
+["Pick the correct sentence.",["She go to school.","She goes to school.","She going school.","She gone to school."],1,"'She' takes 'goes'.","s"],
+["Which is a proper noun?",["city","Kumasi","river","school"],1,"Names of places start with capital letters.","s"],
+["'The sun rose slowly.' 'slowly' is a...",["noun","adjective","adverb","pronoun"],2,"It tells how the sun rose.","b"],
+["'If I ___ rich, I would travel.'",["am","was","were","be"],2,"Use 'were' for unreal conditions.","b"],
+["The opposite of 'ancient' is...",["old","modern","huge","weak"],1,"Ancient = very old.","b"]],
+"🔢 Mathematics":"gen",
+"🔬 Integrated Science":[
+["Which gas do plants take in for photosynthesis?",["Oxygen","Nitrogen","Carbon dioxide","Hydrogen"],2,"Plants use CO₂, water and sunlight.","s"],
+["The unit of force is the...",["Joule","Newton","Watt","Metre"],1,"Force is measured in newtons.","s"],
+["Which organ pumps blood?",["Lungs","Heart","Liver","Kidney"],1,"The heart pumps blood round the body.","s"],
+["Water changing to vapour is called...",["Condensation","Evaporation","Freezing","Melting"],1,"Heat turns liquid water into vapour.","b"],
+["Which part of the cell controls its activities?",["Cell wall","Nucleus","Vacuole","Cytoplasm"],1,"The nucleus is the control centre.","b"]],
+"🌍 Social Studies":[
+["Ghana became independent in...",["1947","1957","1960","1966"],1,"6th March 1957.","s"],
+["The longest river in Ghana is the...",["Pra","Ankobra","Volta","Tano"],2,"The Volta.","s"],
+["First President of Ghana?",["J.J. Rawlings","Kwame Nkrumah","J.A. Kufuor","Hilla Limann"],1,"Dr Kwame Nkrumah.","s"],
+["ECOWAS promotes mainly...",["Sports","Economic cooperation in West Africa","Religion","Farming only"],1,"Economic Community of West African States.","b"],
+["Which body organises elections in Ghana?",["Electoral Commission","Parliament","Police","Judiciary"],0,"The Electoral Commission.","b"]],
+"🕊️ RME":[
+["Which is a good moral value?",["Honesty","Cheating","Stealing","Laziness"],0,"Honesty = telling the truth.","s"],
+["Respect for elders is important in...",["Only schools","Only churches","Ghanaian culture","Nowhere"],2,"It is central to our culture.","s"],
+["The Holy Book of Islam is the...",["Bible","Quran","Torah","Vedas"],1,"The Quran.","b"],
+["Which is a rite of passage?",["Naming ceremony","Shopping","Football","Reading"],0,"Rites mark stages of life.","b"]],
+"💻 ICT":[
+["Which is an input device?",["Monitor","Keyboard","Printer","Speaker"],1,"A keyboard sends data in.","s"],
+["CPU stands for...",["Central Processing Unit","Computer Power Unit","Central Program Utility","Control Print Unit"],0,"The brain of the computer.","s"],
+["Which is an operating system?",["Windows","Excel","Chrome","Word"],0,"Windows runs the computer.","b"],
+["1 byte equals how many bits?",["4","8","16","10"],1,"8 bits = 1 byte.","b"]],
+"🇫🇷 French":[
+["'Good morning' in French?",["Bonsoir","Bonjour","Merci","Au revoir"],1,"Bonjour.","s"],
+["'Merci' means...",["Please","Sorry","Thank you","Goodbye"],2,"Merci = thank you.","s"],
+["'Chat' means...",["dog","cat","bird","fish"],1,"Chat = cat.","s"],
+["'Je m'appelle Ama' means...",["I love Ama","My name is Ama","I go to Ama","I eat Ama"],1,"Introducing yourself.","b"],
+["'Three' in French?",["deux","trois","quatre","cinq"],1,"Trois.","b"]],
+"🗣️ Asante Twi":[
+["'Medaase' means...",["Please","Thank you","Sorry","Goodbye"],1,"Medaase = thank you.","s"],
+["How do you say 'Good morning' in Twi?",["Maakye","Maadwo","Maaha","Akwaaba"],0,"Maakye = good morning.","s"],
+["'Akwaaba' means...",["Welcome","Goodbye","Thank you","Please"],0,"Akwaaba = welcome.","s"],
+["'Aane' means...",["No","Yes","Maybe","Later"],1,"Aane = yes, Daabi = no.","s"],
+["'Daabi' means...",["Yes","Thank you","No","Water"],2,"Daabi = no.","s"],
+["'Wo ho te dɛn?' means...",["What is your name?","How are you?","Where are you going?","What time is it?"],1,"A common greeting: How are you?","s"],
+["'Nsuo' means...",["Food","Water","Book","House"],1,"Nsuo = water.","s"],
+["'Maame' means...",["Father","Mother","Teacher","Child"],1,"Maame = mother.","s"],
+["The number 'anum' is...",["3","4","5","6"],2,"anum = 5.","s"],
+["'Baako' is the number...",["1","2","3","10"],0,"baako = 1.","s"],
+["Which day is 'Fiada'?",["Monday","Wednesday","Friday","Sunday"],2,"Fiada = Friday.","b"],
+["Which day is 'Kwasiada'?",["Sunday","Monday","Saturday","Thursday"],0,"Kwasiada = Sunday.","b"],
+["Which day is 'Memeneda'?",["Friday","Saturday","Tuesday","Thursday"],1,"Memeneda = Saturday.","b"],
+["'Edu' is the number...",["5","8","10","20"],2,"edu = 10.","b"],
+["'Nwɔtwe' is the number...",["6","7","8","9"],2,"nwɔtwe = 8.","b"],
+["'Me kɔ sukuu' means...",["I eat food","I go to school","I love books","I am a teacher"],1,"sukuu = school.","b"],
+["'Da yie' is said to wish someone...",["Good morning","A good night's sleep","Welcome","Happy birthday"],1,"Da yie = sleep well / good night.","b"],
+["'Ɔbarima' means...",["Woman","Man","Child","Elder"],1,"ɔbarima = man, ɔbaa = woman.","b"]],
+"🛠️ Career Technology":[
+["Which tool measures length?",["Hammer","Tape measure","Saw","Pliers"],1,"A tape measure.","s"],
+["A workshop safety rule is to...",["Run around","Wear protective clothing","Eat while working","Skip instructions"],1,"Stay safe.","b"]],
+"🎨 Creative Arts":[
+["Which is a primary colour?",["Green","Orange","Red","Purple"],2,"Red, blue, yellow.","s"],
+["Blue + yellow makes...",["Green","Orange","Purple","Brown"],0,"Secondary colour green.","b"]],
+"✝️ Bible Quiz":[
+["Who built the ark?",["Moses","Noah","Abraham","David"],1,"Genesis 6.","s"],
+["How many disciples did Jesus choose?",["10","11","12","14"],2,"Twelve.","s"],
+["Who was swallowed by a big fish?",["Jonah","Peter","Elijah","Paul"],0,"Jonah.","s"],
+["Who defeated Goliath?",["Saul","Samson","David","Joshua"],2,"David.","s"],
+["Who led Israel out of Egypt?",["Moses","Aaron","Joshua","Elijah"],0,"Moses.","s"],
+["The Sermon on the Mount is in...",["Matthew 5–7","John 3","Acts 2","Genesis 1"],0,"Matthew 5–7.","b"],
+["Who replaced Judas as an apostle?",["Matthias","Barnabas","Silas","Timothy"],0,"Acts 1.","b"]]
+};
+if(window.EXTRA)for(const k in EXTRA)if(Array.isArray(D[k]))D[k].push(...EXTRA[k]);
+const FACTS=["Ghana was the first sub-Saharan African country to gain independence (1957).","7 × 7 = 49, so 49 is a square number.","Lake Volta is one of the largest man-made lakes in the world.","A square number is a number multiplied by itself, like 6 × 6 = 36.","The Bible has 66 books: 39 in the Old Testament, 27 in the New.","Negative × negative = positive.","Water boils at 100°C at sea level.","'Bonjour' is the French word for hello."];
+const $=id=>document.getElementById(id),rnd=(a,b)=>a+Math.floor(Math.random()*(b-a+1)),pick=a=>a[rnd(0,a.length-1)];
+const shuffle=a=>a.map(v=>[Math.random(),v]).sort((x,y)=>x[0]-y[0]).map(x=>x[1]);
+let user=localStorage.getItem("user")||"",level="s",T,qs,i,sc,lock,sub,sp;
+/* ---- maths generators ---- */
+const W1="zero one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen".split(" "),TY=",,twenty,thirty,forty,fifty,sixty,seventy,eighty,ninety".split(",");
+function words(n){if(n<20)return W1[n];if(n<100)return TY[n/10|0]+(n%10?"-"+W1[n%10]:"");
+ if(n<1000)return W1[n/100|0]+" hundred"+(n%100?" and "+words(n%100):"");
+ return words(n/1000|0)+" thousand"+(n%1000?(n%1000<100?" and ":" ")+words(n%1000):"")}
+const NUM={s:[()=>{const n=rnd(2,12);return{q:`${n}² = ?`,c:n*n,e:`${n} × ${n} = ${n*n}`}},
+ ()=>{const n=rnd(2,12);return{q:`√${n*n} = ?`,c:n,e:`${n} × ${n} = ${n*n}`}},
+ ()=>{const a=rnd(-9,9),b=rnd(-9,9),p=rnd(0,1);return{q:`(${a}) ${p?"+":"−"} (${b}) = ?`,c:p?a+b:a-b,e:p?"Add the integers.":"Subtracting a negative means adding."}}],
+ b:[()=>{const p=pick([10,15,20,25,30,40]),n=pick([40,60,80,120,200,300,400]);return{q:`${p}% of ${n} = ?`,c:p*n/100,e:`${p}/100 × ${n}`}},
+ ()=>{const x=rnd(2,12),a=rnd(2,9),b=rnd(1,20);return{q:`Solve: ${a}x + ${b} = ${a*x+b}. x = ?`,c:x,e:`${a}x = ${a*x}, so x = ${x}`}},
+ ()=>{const l=rnd(4,15),w=rnd(3,12);return{q:`Area of a rectangle ${l} cm by ${w} cm (cm²)?`,c:l*w,e:"Area = length × width."}},
+ ()=>{const a=rnd(2,9),b=rnd(2,9);return{q:`(−${a}) × (−${b}) = ?`,c:a*b,e:"Negative × negative = positive."}},
+ ()=>{const n=rnd(13,25);return{q:`${n}² = ?`,c:n*n,e:`${n} × ${n} = ${n*n}`}}]};
+const WRD={s:[()=>{const n=rnd(11,999);return{q:`Write ${n} in words.`,c:words(n),e:"Break it into hundreds, tens and units.",wr:()=>words(Math.max(1,n+rnd(-30,30)))}},
+ ()=>{const n=rnd(11,999);return{q:`Which number is "${words(n)}"?`,c:n,e:`${words(n)} = ${n}`,wr:()=>Math.max(1,n+rnd(-30,30))}}],
+ b:[()=>{const n=rnd(1000,9999);return{q:`Write ${n} in words.`,c:words(n),e:"Thousands, hundreds, tens, units.",wr:()=>words(Math.max(1,n+rnd(-300,300)))}}]};
+NUM.i=NUM.b;WRD.i=WRD.b;
+NUM.l=[()=>{const n=rnd(2,9);return{q:`${n}³ = ?`,c:n**3,e:`${n} × ${n} × ${n} = ${n**3}`}},
+()=>{const a=rnd(2,20),b=rnd(2,9),c=rnd(2,9),d=rnd(1,15);return{q:`${a} + ${b} × ${c} − ${d} = ?`,c:a+b*c-d,e:"Multiply first (BODMAS), then add and subtract."}},
+()=>{const p=pick([5,10,15,20,25]),n=pick([40,80,120,200,400]);return{q:`A price of GH₵${n} goes up by ${p}%. New price (GH₵)?`,c:n+n*p/100,e:`${p}% of ${n} = ${n*p/100}; add it to ${n}.`}},
+()=>{const b=2*rnd(2,10),h=rnd(3,12);return{q:`Area of a triangle with base ${b} cm and height ${h} cm (cm²)?`,c:b*h/2,e:"Area = ½ × base × height."}},
+()=>{const x=rnd(-8,8),a=rnd(2,9),b=rnd(1,20);return{q:`Solve: ${a}x − ${b} = ${a*x-b}. x = ?`,c:x,e:`${a}x = ${a*x}, so x = ${x}`}}];
+WRD.l=[()=>{const n=rnd(10000,99999);return{q:`Write ${n} in words.`,c:words(n),e:"Say the thousands first, then hundreds, tens and units.",wr:()=>words(Math.max(1,n+rnd(-3000,3000)))}}];
+function mc(x){const s=new Set([x.c]);let t=0;while(s.size<4&&t++<80)s.add(x.wr?x.wr():x.c+rnd(-6,6));
+ const a=shuffle([...s]);return{q:x.q,o:a.map(String),a:a.indexOf(x.c),e:x.e}}
+const mathQ=()=>mc(pick([...NUM[level],...WRD[level]])());
+/* ---- home ---- */
+const show=id=>{document.body.classList.toggle("anon",!(user&&grade));["welcome","setup","home","quiz","result","speed","memory","learn","stories","chat","scr","tf","sv"].forEach(s=>$(s).classList.toggle("hid",s!=id))};
+const scores=()=>{try{return JSON.parse(localStorage.getItem("scores")||"{}")}catch{return{}}};
+function save(k,v){const s=scores();if(!(s[k]>=v))s[k]=v;try{localStorage.setItem("scores",JSON.stringify(s))}catch{}}
+function home(){clearInterval(T);if(!user){show("welcome");return}if(!grade){setup();return}$("greet").textContent=`Hi ${user} • ${rank()} • ${grade}, ${term}`;
+ $("login").classList.toggle("hid",!!user);$("fact").textContent="💡 "+pick(FACTS);
+ document.querySelectorAll(".lv").forEach(b=>{b.classList.toggle("on",b.dataset.l==level);b.onclick=()=>{level=b.dataset.l;home()}});
+ $("subs").innerHTML="";Object.keys(D).forEach(n=>{const b=document.createElement("button");b.className="sub";b.textContent=n;b.onclick=()=>start(n);$("subs").appendChild(b)});
+ const s=scores(),k=Object.keys(s);$("sc").innerHTML=k.length?k.map(x=>`${x}: <b>${s[x]}</b>`).join("<br>"):"None yet";show("home")}
+function setUser(n){user=n;try{localStorage.setItem("user",n)}catch{}home()}
+$("go").onclick=()=>{const n=$("nm").value.trim();if(n)setUser(n)};
+
+/* ---- quiz ---- */
+const LN={s:"Starter",i:"Intermediate",l:"Legend"},NQ={s:10,i:20,l:40},RK={s:0,i:1,l:2};
+function start(n){sub=n;const d=D[n],N=NQ[level];
+ qs=d==="gen"?Array.from({length:N},mathQ):(()=>{const t=x=>x[4]=="b"?"i":x[4],mine=shuffle(d.filter(x=>t(x)==level)),low=shuffle(d.filter(x=>RK[t(x)]<RK[level]));let f=[...mine,...low].slice(0,N);if(!f.length)f=shuffle(d).slice(0,N);return f.map(x=>({q:x[0],o:x[1],a:x[2],e:x[3]}))})();
+ i=0;sc=0;show("quiz");ask()}
+function ask(){lock=false;const q=qs[i];$("meta").textContent=`${sub} • ${sub=="Legend Mix"?"All subjects":LN[level]} • ${i+1}/${qs.length}${(level=="i"||level=="l")&&sub!="Legend Mix"&&qs.length<NQ[level]?" (all we have so far)":""}`;
+ $("pg").style.width=i/qs.length*100+"%";$("qt").textContent=q.q;$("ex").classList.add("hid");$("nx").classList.add("hid");$("op").innerHTML="";
+ q.o.forEach((t,k)=>{const b=document.createElement("button");b.className="opt";b.textContent="ABCD"[k]+". "+t;b.onclick=()=>pickAns(k,b);$("op").appendChild(b)})}
+function pickAns(k,b){if(lock)return;lock=true;const q=qs[i];if(k==q.a){sc++;b.classList.add("ok")}else{b.classList.add("no");$("op").children[q.a].classList.add("ok")}
+ if(q.e){$("ex").textContent="💡 "+q.e;$("ex").classList.remove("hid")}$("nx").textContent=i==qs.length-1?"See result":"Next";$("nx").classList.remove("hid")}
+$("nx").onclick=()=>{i++;i<qs.length?ask():fin()};
+function fin(){const p=Math.round(sc/qs.length*100);pts+=sc;try{localStorage.setItem("pts",pts)}catch{}save(sub+" ("+(LN[level])+")",p);
+ $("fs").textContent=`${sc}/${qs.length} (${p}%)`;$("fm").textContent=p>=80?"Excellent! 🎉":p>=50?"Good, keep going! 💪":"Keep practising, you will get it! 📖";show("result")}
+$("again").onclick=()=>start(sub);$("hm").onclick=home;
+/* ---- Speed Math ---- */
+function spNext(){sp.cur=pick(NUM[level])();$("spQ").textContent=sp.cur.q}
+function speed(){clearInterval(T);sp={s:0,t:30};show("speed");$("spIn").disabled=false;$("spIn").value="";$("spS").textContent="Score: 0";$("spT").textContent="⏱ 30s";spNext();$("spIn").focus();
+ T=setInterval(()=>{sp.t--;$("spT").textContent="⏱ "+sp.t+"s";if(sp.t<=0){clearInterval(T);$("spIn").disabled=true;save("Speed Math ("+(LN[level])+")",sp.s);$("spQ").textContent=`Time up! Score: ${sp.s}`}},1000)}
+$("spIn").onkeydown=e=>{if(e.key!="Enter"||sp.t<=0||$("spIn").value==="")return;if(Number($("spIn").value)===sp.cur.c){sp.s++;$("spS").textContent="Score: "+sp.s}$("spIn").value="";spNext()};
+$("g1").onclick=speed;$("spGo").onclick=speed;$("spH").onclick=home;
+/* ---- French Match ---- */
+const PAIRS=[["Bonjour","Hello"],["Merci","Thank you"],["Chat","Cat"],["Pain","Bread"],["Eau","Water"],["Livre","Book"]];
+function memory(){show("memory");let open=[],moves=0,found=0;$("mvs").textContent="Match the French word with its English meaning. Moves: 0";$("mg").innerHTML="";
+ shuffle(PAIRS.flatMap((p,k)=>[{t:p[0],k},{t:p[1],k}])).forEach(c=>{const b=document.createElement("button");b.className="mc";b.textContent="?";
+  b.onclick=()=>{if(open.length>1||b.classList.contains("up")||b.classList.contains("done"))return;b.classList.add("up");b.textContent=c.t;open.push({b,c});
+   if(open.length==2){moves++;$("mvs").textContent="Moves: "+moves;const[x,y]=open;
+    if(x.c.k==y.c.k){x.b.className=y.b.className="mc done";open=[];if(++found==PAIRS.length)$("mvs").textContent=`🎉 Done in ${moves} moves!`}
+    else setTimeout(()=>{[x,y].forEach(o=>{o.b.className="mc";o.b.textContent="?"});open=[]},800)}};$("mg").appendChild(b)})}
+$("g2").onclick=memory;$("mH").onclick=home;
+
+let dp;addEventListener("beforeinstallprompt",e=>{e.preventDefault();dp=e;$("inst").classList.remove("hid")});
+$("inst").onclick=()=>{if(dp){dp.prompt();dp=null;$("inst").classList.add("hid")}};
+const N={
+"🔢 Mathematics":[["Square numbers & square roots","A square number is a number multiplied by itself.<br>1²=1, 2²=4, 3²=9, 4²=16, 5²=25 … 12²=144.<br>The square root (√) undoes squaring: √81 = 9 because 9 × 9 = 81."],
+["Integers","Integers are whole numbers: positive, negative or zero.<br>Adding a negative is like subtracting: 5 + (−3) = 2.<br>Subtracting a negative is like adding: 5 − (−3) = 8.<br>Negative × negative = positive. Negative × positive = negative."],
+["Numbers in words","Split the number into parts.<br>456 = four hundred and fifty-six.<br>3,205 = three thousand, two hundred and five."],
+["Percentages (BECE)","Percent means 'out of 100'.<br>20% of 60 = 20/100 × 60 = 12."]],
+"📖 English & Communication":[["Parts of speech","Noun = name of a person, place or thing. Verb = action. Adjective = describes a noun. Adverb = describes a verb (how, when, where). Pronoun = replaces a noun (he, she, they)."],
+["Subject-verb agreement","A singular subject takes a singular verb: She goes to school.<br>A plural subject takes a plural verb: They go to school."]],
+"🔬 Integrated Science":[["Photosynthesis","Green plants make food using sunlight, water and carbon dioxide. This happens in the chloroplasts. They produce glucose (food) and oxygen."],
+["States of matter","Solid, liquid and gas. Melting: solid → liquid. Freezing: liquid → solid. Evaporation: liquid → gas. Condensation: gas → liquid."]],
+"🌍 Social Studies":[["Ghana at a glance","Ghana gained independence on 6th March 1957. Kwame Nkrumah was the first President. The capital is Accra."],
+["ECOWAS","The Economic Community of West African States was formed in 1975 to promote cooperation and trade among West African countries."]],
+"🕊️ RME":[["Good values","Honesty, respect, hard work, obedience and responsibility help us live well with others."],
+["Religions in Ghana","The three main religions are Christianity, Islam and African Traditional Religion."]],
+"💻 ICT":[["Parts of a computer","Input devices (keyboard, mouse) send data in. Output devices (monitor, printer) show results. The CPU processes data. Storage (hard disk, flash drive) keeps files."]],
+"🇫🇷 French":[["Greetings & numbers","Bonjour = hello. Bonsoir = good evening. Merci = thank you. Au revoir = goodbye. Je m'appelle … = my name is …<br>1–5: un, deux, trois, quatre, cinq."]],
+"🗣️ Asante Twi":[["Greetings","Maakye = good morning. Maaha = good afternoon. Maadwo = good evening. Medaase = thank you. Akwaaba = welcome. Aane = yes. Daabi = no."],
+["Numbers & days","1–10: baako, mmienu, mmiɛnsa, anan, anum, nsia, nson, nwɔtwe, nkron, edu.<br>Days: Dwoada (Mon), Benada (Tue), Wukuada (Wed), Yawoada (Thu), Fiada (Fri), Memeneda (Sat), Kwasiada (Sun).<br><i>Check these against your Twi textbook.</i>"]],
+"🛠️ Career Technology":[["Workshop safety","Wear protective clothing, keep tools in their place, follow instructions, and report accidents to your teacher."]],
+"🎨 Creative Arts":[["Colours","Primary colours: red, blue, yellow. Mixing two primaries gives secondary colours: green (blue + yellow), orange (red + yellow), purple (red + blue)."]],
+"✝️ Bible Quiz":[["The Bible","66 books: 39 in the Old Testament and 27 in the New Testament. Genesis is the first book. Jesus chose 12 disciples. David defeated Goliath (1 Samuel 17)."]]};
+function learn(){const c=$("ln");c.innerHTML="";Object.keys(N).forEach(k=>{const d=document.createElement("div");d.className="card";
+ d.innerHTML=`<b>${k}</b>`+N[k].map(n=>`<details><summary>${n[0]}</summary><p>${n[1]}</p></details>`).join("");
+ const b=document.createElement("button");b.className="pri";b.textContent="Practise "+k;b.onclick=()=>start(k);d.appendChild(b);c.appendChild(d)});show("learn")}
+$("lb").onclick=learn;$("lh").onclick=home;
+const lvOf=g=>/JHS [12]/.test(g)?"s":/JHS 3/.test(g)?"i":"l";
+let grade=localStorage.getItem("grade")||"",term=localStorage.getItem("term")||"",pts=+(localStorage.getItem("pts")||0),sg=grade,st=term;
+if(grade)level=lvOf(grade);
+const rank=()=>pts>=300?"🏆 Master":pts>=150?"🎓 Scholar":pts>=50?"📚 Learner":"🌱 Newbie";
+$("wgo").onclick=()=>{const n=$("wn").value.trim();if(n)setUser(n)};
+function setup(){show("setup");$("rk").textContent=rank();$("rkm").textContent=pts?pts+" points":"You are new here. Pick your class to start!";
+ const mk=(id,arr,get,set)=>{const b=$(id);b.innerHTML="";arr.forEach(x=>{const e=document.createElement("button");e.className="lv"+(get()==x?" on":"");e.style.width="100%";e.textContent=x;e.onclick=()=>{set(x);setup()};b.appendChild(e)})};
+ mk("gr",["JHS 1","JHS 2","JHS 3","SHS 1","SHS 2","SHS 3"],()=>sg,x=>sg=x);mk("tm",["Term 1","Term 2","Term 3"],()=>st,x=>st=x)}
+$("sgo").onclick=()=>{if(!sg||!st)return alert("Pick your class and your term first.");grade=sg;term=st;level=lvOf(grade);try{localStorage.setItem("grade",grade);localStorage.setItem("term",term)}catch{}home()};
+$("nGrade").onclick=()=>{$("side").classList.remove("open");sg=grade;st=term;setup()};
+function mix(){sub="Legend Mix";const p=[];Object.keys(D).forEach(k=>{if(D[k]!=="gen")D[k].forEach(x=>p.push({q:x[0],o:x[1],a:x[2],e:x[3]}))});
+ const L=level;level="l";const m=Array.from({length:10},mathQ);level=L;qs=shuffle(shuffle(p).slice(0,30).concat(m));i=0;sc=0;show("quiz");ask()}
+$("mixb").onclick=mix;
+/* ---- more games ---- */
+const WS=[["PHOTOSYNTHESIS","How plants make food"],["ACCRA","Capital of Ghana"],["VOLTA","Longest river in Ghana"],["NUCLEUS","Control centre of a cell"],["PARLIAMENT","Makes laws in Ghana"],["KEYBOARD","An input device"],["ADJECTIVE","Describes a noun"],["INTEGER","A whole number, can be negative"],["GENESIS","First book of the Bible"],["BONJOUR","Hello in French"],["MAAKYE","Good morning in Twi"],["KENTE","Famous Ghanaian woven cloth"],["EVAPORATION","Liquid turning into gas"],["TROWEL","A bricklaying tool"],["PERCENTAGE","Out of 100"],["ELECTORAL","___ Commission organises elections"],["GRAVITY","Pulls things to the Earth"],["SQUARE","A number multiplied by itself"]];
+const scrambled=w=>{let s;do{s=shuffle(w.split("")).join("")}while(s===w);return s};
+let wsg;
+function scr(){wsg={n:0,s:0,q:shuffle(WS).slice(0,10)};$("scOk").textContent="Check";show("scr");scNext()}
+function scNext(){wsg.lock=false;if(wsg.n>=10){$("scW").textContent="🏁";$("scH").textContent="";$("scI").textContent=`Done! Score: ${wsg.s}/10`;save("Word Scramble",wsg.s);$("scIn").disabled=true;$("scOk").textContent="Play again";return}
+ const[w,h]=wsg.q[wsg.n];wsg.cur=w;$("scIn").disabled=false;$("scIn").value="";$("scW").textContent=scrambled(w).split("").join(" ");$("scH").textContent="Hint: "+h;$("scI").textContent=`Word ${wsg.n+1}/10 • Score ${wsg.s}`;$("scIn").focus()}
+function scCheck(){if(wsg.n>=10){scr();return}if(wsg.lock)return;const v=$("scIn").value.trim().toUpperCase();if(!v)return;wsg.lock=true;
+ if(v===wsg.cur){wsg.s++;$("scH").textContent="✅ Correct!"}else $("scH").textContent="❌ It was "+wsg.cur;wsg.n++;setTimeout(scNext,1000)}
+$("scOk").onclick=scCheck;$("scIn").onkeydown=e=>{if(e.key=="Enter")scCheck()};$("g3").onclick=scr;$("scHome").onclick=home;
+const TF=[["Ghana became independent in 1957.",1],["7 × 8 = 54.",0],["The Sun is a planet.",0],["A noun is a naming word.",1],["Plants take in oxygen for photosynthesis.",0],["Genesis is the first book of the Bible.",1],["'Merci' means goodbye in French.",0],["'Medaase' means thank you in Twi.",1],["A keyboard is an output device.",0],["Water boils at 100°C at sea level.",1],["Accra is the capital of Ghana.",1],["A negative times a negative is a negative.",0],["√64 = 8.",1],["Jesus chose 10 disciples.",0],["The CPU is called the brain of the computer.",1],["Red, blue and yellow are primary colours.",1],["Lake Volta is a natural lake.",0],["ECOWAS is the Economic Community of West African States.",1],["1/2 is the same as 50%.",1],["Kwame Nkrumah was Ghana's first President.",1],["Evaporation turns a gas into a liquid.",0],["'Nsuo' means water in Twi.",1],["12² = 124.",0],["Kente cloth is woven in strips.",1]];
+let tfS;
+const tfInfo=()=>{$("tfI").textContent=`⏱ ${tfS.t}s • Score ${tfS.s}`};
+const tfShow=()=>{tfInfo();$("tfQ").textContent=tfS.q[tfS.i%tfS.q.length][0]};
+function tf(){clearInterval(T);tfS={s:0,t:30,i:0,q:shuffle(TF)};show("tf");$("tfT").disabled=$("tfF").disabled=false;$("tfM").textContent="";tfShow();
+ T=setInterval(()=>{tfS.t=Math.max(0,tfS.t-1);tfInfo();if(tfS.t<=0){clearInterval(T);$("tfT").disabled=$("tfF").disabled=true;$("tfQ").textContent=`Time up! Score: ${tfS.s}`;save("True/False Blitz",tfS.s)}},1000)}
+function tfAns(v){if(tfS.t<=0)return;if(v==tfS.q[tfS.i%tfS.q.length][1]){tfS.s++;$("tfM").textContent="✅ Correct"}else{$("tfM").textContent="❌ Wrong (−2 seconds)";tfS.t=Math.max(0,tfS.t-2)}tfS.i++;tfShow()}
+$("tfT").onclick=()=>tfAns(1);$("tfF").onclick=()=>tfAns(0);$("tfR").onclick=tf;$("g4").onclick=tf;$("tfHome").onclick=home;
+let vs;
+const qpool=()=>{const p=[];Object.keys(D).forEach(k=>{if(D[k]!=="gen")D[k].forEach(x=>p.push({q:x[0],o:x[1],a:x[2],e:x[3]}))});return shuffle(p)};
+function sv(){vs={s:0,l:3,i:0,p:qpool()};$("svR").classList.add("hid");show("sv");svNext()}
+function svNext(){vs.lock=false;$("svE").classList.add("hid");const q=vs.i%4==3?mathQ():vs.p[vs.i%vs.p.length];vs.cur=q;vs.i++;
+ $("svI").textContent="❤️".repeat(vs.l)+" • Score "+vs.s;$("svQ").textContent=q.q;$("svO").innerHTML="";
+ q.o.forEach((t,k)=>{const b=document.createElement("button");b.className="opt";b.textContent="ABCD"[k]+". "+t;b.onclick=()=>svPick(k,b);$("svO").appendChild(b)})}
+function svPick(k,b){if(vs.lock)return;vs.lock=true;const q=vs.cur;
+ if(k==q.a){vs.s++;b.classList.add("ok")}else{vs.l--;b.classList.add("no");$("svO").children[q.a].classList.add("ok")}
+ if(q.e){$("svE").textContent="💡 "+q.e;$("svE").classList.remove("hid")}$("svI").textContent="❤️".repeat(vs.l)+" • Score "+vs.s;
+ if(vs.l<=0){save("Survival",vs.s);setTimeout(()=>{$("svQ").textContent=`Game over! You answered ${vs.s} correctly 🏆`;$("svO").innerHTML="";$("svE").classList.add("hid");$("svR").classList.remove("hid")},1300)}else setTimeout(svNext,1300)}
+$("g5").onclick=sv;$("svR").onclick=sv;$("svHome").onclick=home;
+const go=f=>{$("side").classList.remove("open");f()};
+$("menu").onclick=()=>$("side").classList.toggle("open");
+$("nHome").onclick=()=>go(home);$("nLearn").onclick=()=>go(learn);
+$("nStory").onclick=()=>go(()=>(window.openStories||(()=>alert("Needs internet")))());
+$("nChat").onclick=()=>go(()=>(window.openChat||(()=>alert("Needs internet")))());
+$("nSign").onclick=()=>go(()=>{try{localStorage.removeItem("user")}catch{}user="";home()});
+$("nCall").onclick=()=>go(()=>{window.open("https://meet.google.com/new","_blank");alert("Google Meet opened. Copy the meeting link and send it to your friend in Chat.")});
+home();
+</script>
+<script>
+window.openChat=window.openStories=()=>alert("Chat and stories need your own Firebase setup. They are not on this link yet.");
+$("gsign").onclick=()=>alert("Google sign-in is not on this link yet. Type your name instead.");
+</script></body></html>
